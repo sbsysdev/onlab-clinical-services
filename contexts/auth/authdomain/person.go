@@ -89,7 +89,12 @@ type Person struct {
 	Sex     PersonSex
 }
 
-// Person Entity Factory
-func CreatePerson(name PersonName, surname PersonSurname, birth time.Time, sex PersonSex) (Person, error) {
-	return Person{}, nil
+// Person Value Object Factory
+func CreatePerson(name PersonName, surname PersonSurname, birth PersonBirth, sex PersonSex) Person {
+	return Person{
+		Name:    name,
+		Surname: surname,
+		Birth:   birth,
+		Sex:     sex,
+	}
 }
