@@ -2,14 +2,17 @@ package authdomain
 
 // Patient Entity
 type PatientEntity struct {
-	Name     string
-	Password string
-	Person   interface{}
-	Contacts interface{}
+	Person   Person
+	User     User
+	Contacts Contacts
 	State    string
 }
 
 // Patient Entity Factory
-func CreatePatient() (PatientEntity, error) {
-	return PatientEntity{}, nil
+func CreatePatient(person Person, user User, contacts Contacts) PatientEntity {
+	return PatientEntity{
+		Person:   person,
+		User:     user,
+		Contacts: contacts,
+	}
 }
