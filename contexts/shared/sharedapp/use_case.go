@@ -11,5 +11,5 @@ type QueryUseCase interface {
 }
 
 type EventHandler interface {
-	Handle(context.Context) error
+	Handle(context.Context)
 }
