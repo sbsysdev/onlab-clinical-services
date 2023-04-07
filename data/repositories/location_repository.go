@@ -1,8 +1,9 @@
 package repositories
 
 import (
-	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
 	"gorm.io/gorm"
+
+	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
 )
 
 type LocationRepository struct {
