@@ -3,8 +3,9 @@ package authdomain
 import (
 	"errors"
 
-	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
 	"github.com/go-playground/validator/v10"
+
+	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
 )
 
 // Contact Email Value Object
@@ -45,21 +46,16 @@ func CreateEmailList(min uint8, emails ...string) ([]ContactEmail, error) {
 
 // Contact Phone Value Object
 type ContactPhone struct {
-	Country uint8
+	Country shareddomain.Country
 	Phone   string
 }
 
 const (
-	ERRORS_CONTACT_PHONE_COUNTRY_NOT_FOUND shareddomain.DomainError = "ERRORS_CONTACT_PHONE_COUNTRY_NOT_FOUND"
-	ERRORS_CONTACT_PHONE_FORMAT            shareddomain.DomainError = "ERRORS_CONTACT_PHONE_FORMAT"
-	ERRORS_CONTACT_PHONE_MIN               shareddomain.DomainError = "ERRORS_CONTACT_PHONE_MIN"
+	ERRORS_CONTACT_PHONE_FORMAT shareddomain.DomainError = "ERRORS_CONTACT_PHONE_FORMAT"
+	ERRORS_CONTACT_PHONE_MIN    shareddomain.DomainError = "ERRORS_CONTACT_PHONE_MIN"
 )
 
-func CreatePhone(country uint8, phone string, locationRepo LocationRepository) (ContactPhone, error) {
-	if !locationRepo.IsExistingCountry(country) {
-		return ContactPhone{}, errors.New(string(ERRORS_CONTACT_PHONE_COUNTRY_NOT_FOUND))
-	}
-
+func CreatePhone(country shareddomain.Country, phone string) (ContactPhone, error) {
 	validate := validator.New()
 
 	if err := validate.Var(phone, "min=7,max=10,numeric,excludes=.,excludes=0x2C"); err != nil {
@@ -72,7 +68,12 @@ func CreatePhone(country uint8, phone string, locationRepo LocationRepository) (
 	}, nil
 }
 
-func CreatePhoneList(min uint8, locationRepo LocationRepository, phones ...ContactPhone) ([]ContactPhone, error) {
+type ContactPhoneRequest struct {
+	Country uint8
+	Phone   string
+}
+
+func CreatePhoneList(min uint8, locationRepo shareddomain.LocationRepository, phones ...ContactPhoneRequest) ([]ContactPhone, error) {
 	if len(phones) < int(min) {
 		return []ContactPhone{}, errors.New(string(ERRORS_CONTACT_PHONE_MIN))
 	}
@@ -80,10 +81,16 @@ func CreatePhoneList(min uint8, locationRepo LocationRepository, phones ...Conta
 	phoneList := make([]ContactPhone, len(phones))
 
 	for _, v := range phones {
-		phone, err := CreatePhone(v.Country, v.Phone, locationRepo)
+		country, countryErr := locationRepo.GetCountryById(v.Country, false, false)
 
-		if err != nil {
-			return []ContactPhone{}, err
+		if countryErr != nil {
+			return []ContactPhone{}, countryErr
+		}
+
+		phone, phoneErr := CreatePhone(country, v.Phone)
+
+		if phoneErr != nil {
+			return []ContactPhone{}, phoneErr
 		}
 
 		phoneList = append(phoneList, phone)
@@ -94,21 +101,16 @@ func CreatePhoneList(min uint8, locationRepo LocationRepository, phones ...Conta
 
 // Contact Address Value Object
 type ContactAddress struct {
-	Municipality uint16
+	Municipality shareddomain.Municipality
 	Address      string
 }
 
 const (
-	ERRORS_CONTACT_ADDRESS_MUNICIPALITY_NOT_FOUND shareddomain.DomainError = "ERRORS_CONTACT_ADDRESS_MUNICIPALITY_NOT_FOUND"
-	ERRORS_CONTACT_ADDRESS_EMPTY                  shareddomain.DomainError = "ERRORS_CONTACT_ADDRESS_EMPTY"
-	ERRORS_CONTACT_ADDRESS_MIN                    shareddomain.DomainError = "ERRORS_CONTACT_ADDRESS_MIN"
+	ERRORS_CONTACT_ADDRESS_EMPTY shareddomain.DomainError = "ERRORS_CONTACT_ADDRESS_EMPTY"
+	ERRORS_CONTACT_ADDRESS_MIN   shareddomain.DomainError = "ERRORS_CONTACT_ADDRESS_MIN"
 )
 
-func CreateAddress(municipality uint16, address string, locationRepo LocationRepository) (ContactAddress, error) {
-	if !locationRepo.IsExistingMunicipality(municipality) {
-		return ContactAddress{}, errors.New(string(ERRORS_CONTACT_ADDRESS_MUNICIPALITY_NOT_FOUND))
-	}
-
+func CreateAddress(municipality shareddomain.Municipality, address string) (ContactAddress, error) {
 	if len(address) == 0 {
 		return ContactAddress{}, errors.New(string(ERRORS_CONTACT_ADDRESS_EMPTY))
 	}
@@ -119,7 +121,12 @@ func CreateAddress(municipality uint16, address string, locationRepo LocationRep
 	}, nil
 }
 
-func CreateAddressList(min uint8, locationRepo LocationRepository, addresses ...ContactAddress) ([]ContactAddress, error) {
+type ContactAddressRequest struct {
+	Municipality uint16
+	Address      string
+}
+
+func CreateAddressList(min uint8, locationRepo shareddomain.LocationRepository, addresses ...ContactAddressRequest) ([]ContactAddress, error) {
 	if len(addresses) < int(min) {
 		return []ContactAddress{}, errors.New(string(ERRORS_CONTACT_ADDRESS_MIN))
 	}
@@ -127,10 +134,16 @@ func CreateAddressList(min uint8, locationRepo LocationRepository, addresses ...
 	addressList := make([]ContactAddress, len(addresses))
 
 	for _, v := range addresses {
-		address, err := CreateAddress(v.Municipality, v.Address, locationRepo)
+		municipality, municipalityErr := locationRepo.GetMunicipalityById(v.Municipality)
 
-		if err != nil {
-			return []ContactAddress{}, err
+		if municipalityErr != nil {
+			return []ContactAddress{}, municipalityErr
+		}
+
+		address, addressErr := CreateAddress(municipality, v.Address)
+
+		if addressErr != nil {
+			return []ContactAddress{}, addressErr
 		}
 
 		addressList = append(addressList, address)
