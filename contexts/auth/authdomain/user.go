@@ -66,10 +66,10 @@ type User struct {
 }
 
 // User Value Object Factory
-func CreateUser(name UserName, password UserPassword, state UserState) User {
+func CreateUser(name UserName, password UserPassword) User {
 	return User{
 		Name:     name,
 		Password: password,
-		State:    state,
+		State:    STATES_USER_STATE_UNVERIFIED,
 	}
 }
