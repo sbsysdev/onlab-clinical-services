@@ -26,6 +26,12 @@ func (ctrl CreatePatientController) Handle(ctx *gin.Context) {
 		return
 	}
 
+	file, _ := ctx.FormFile("file")
+
+	f, _ := file.Open()
+
+	println(f, file)
+
 	if err := ctrl.CreatePatientUseCase.Command(request); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"status":  false,
