@@ -1,4 +1,4 @@
-package repositories
+package sharedrepos
 
 import (
 	"gorm.io/gorm"
