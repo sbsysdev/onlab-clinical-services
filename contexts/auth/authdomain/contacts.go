@@ -25,6 +25,10 @@ func CreateEmail(email string) (ContactEmail, error) {
 }
 
 func CreateEmailList(min uint8, emails ...string) ([]ContactEmail, error) {
+	if min == 0 && len(emails) == 1 && len(emails[0]) == 0 {
+		return []ContactEmail{}, nil
+	}
+
 	if len(emails) < int(min) {
 		return []ContactEmail{}, errors.New(string(ERRORS_CONTACT_EMAIL_MIN))
 	}
@@ -74,6 +78,10 @@ type ContactPhoneRequest struct {
 }
 
 func CreatePhoneList(min uint8, locationRepo shareddomain.LocationRepository, phones ...ContactPhoneRequest) ([]ContactPhone, error) {
+	if min == 0 && len(phones) == 1 && phones[0].Country == 0 && len(phones[0].Phone) == 0 {
+		return []ContactPhone{}, nil
+	}
+
 	if len(phones) < int(min) {
 		return []ContactPhone{}, errors.New(string(ERRORS_CONTACT_PHONE_MIN))
 	}
@@ -127,6 +135,10 @@ type ContactAddressRequest struct {
 }
 
 func CreateAddressList(min uint8, locationRepo shareddomain.LocationRepository, addresses ...ContactAddressRequest) ([]ContactAddress, error) {
+	if min == 0 && len(addresses) == 1 && addresses[0].Municipality == 0 && len(addresses[0].Address) == 0 {
+		return []ContactAddress{}, nil
+	}
+
 	if len(addresses) < int(min) {
 		return []ContactAddress{}, errors.New(string(ERRORS_CONTACT_ADDRESS_MIN))
 	}
