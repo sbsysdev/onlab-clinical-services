@@ -13,8 +13,6 @@ import (
 	"github.com/OnLab-Clinical/onlab-clinical-services/db/dbshared"
 )
 
-// TODO: Generate "public.USER_STATE_ENUM"
-
 // Person data
 type Person struct {
 	Name    string                    `json:"name"`

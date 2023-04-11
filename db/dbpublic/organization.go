@@ -11,8 +11,6 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// TODO: Generate "public.ORG_TYPE_ENUM"
-
 // Organization info data
 type OrganizationInfo struct {
 	Type    string                    `json:"type"`
@@ -44,8 +42,6 @@ func (info OrganizationInfo) GormValue(ctx context.Context, db *gorm.DB) clause.
 		Vars: []interface{}{string(jsonValue)},
 	}
 }
-
-// TODO: Generate "public.ORG_STATE_ENUM"
 
 // Organization data
 type Organization struct {
