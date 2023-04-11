@@ -3,15 +3,32 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
-	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth"
 	"github.com/gin-gonic/gin"
+
+	"github.com/OnLab-Clinical/onlab-clinical-services/configs"
+	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth"
+	"github.com/OnLab-Clinical/onlab-clinical-services/db"
+	"github.com/OnLab-Clinical/onlab-clinical-services/utils"
 )
 
 func main() {
 	ctx := context.Background()
 
-	// TODO: Configure db
+	// Configure db connection
+	connection := configs.ConfigurePostgreSQLConnection(
+		utils.GetEnv("DB_HOST", "localhost"),
+		utils.GetEnv("DB_USER", "user"),
+		utils.GetEnv("DB_PASSWORD", "1234"),
+		utils.GetEnv("DB_NAME", "onlab_clinical"),
+		utils.GetEnv("DB_PORT", "5432"),
+	)
+
+	// Configure migration
+	if os.Args[1] == "migrate" {
+		db.PublicMigration(connection)
+	}
 
 	// TODO: Configure cache
 
@@ -23,9 +40,9 @@ func main() {
 
 	// Configure modules
 	auth.AuthModule{
-		Context: ctx,
-		// Connection: ,
-		Router: api.Group("/auth"),
+		Context:    ctx,
+		Connection: connection,
+		Router:     api.Group("/auth"),
 	}.LoadModule()
 
 	router.Run(":8080")
