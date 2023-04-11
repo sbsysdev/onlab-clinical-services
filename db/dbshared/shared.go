@@ -11,8 +11,17 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// TODO: Generate "public.COMMON_SCOPE_ENUM"
-// TODO: Generate "public.COMMON_STATE_ENUM"
+// Shared prerequisites
+func MigrateSharedPrerequisites(db *gorm.DB) error {
+	if err := db.Exec("CREATE TYPE COMMON_SCOPE_ENUM AS ENUM('system', 'user', 'org', 'branch');"); err.Error != nil {
+		return err.Error
+	}
+	if err := db.Exec("CREATE TYPE COMMON_STATE_ENUM AS ENUM('active', 'inactive');"); err.Error != nil {
+		return err.Error
+	}
+
+	return nil
+}
 
 // Multilanguage data
 type MultiLanguage map[string]string
