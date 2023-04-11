@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Configure postgresql connection
 func ConfigurePostgreSQLConnection(host, user, password, database, port string) *gorm.DB {
 	dsn := fmt.Sprintf("host=%+v user=%+v password=%+v dbname=%+v port=%+v", host, user, password, database, port)
 
