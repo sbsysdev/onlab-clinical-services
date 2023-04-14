@@ -1,6 +1,10 @@
 package dbpublic
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 // Public prerequisites
 func MigratePublicPrerequisites(db *gorm.DB) error {
@@ -11,13 +15,10 @@ func MigratePublicPrerequisites(db *gorm.DB) error {
 		return err.Error
 	}
 	if err := db.Exec("CREATE TYPE USER_STATE_ENUM AS ENUM('unverified', 'blocked', 'verified', 'suspended');"); err.Error != nil {
-		return err.Error
+		fmt.Sprintln(err.Error.Error())
 	}
-	/* if err := db.Exec("CREATE TYPE ORG_TYPE_ENUM AS ENUM('collaborator', 'organization');"); err.Error != nil {
-		return err.Error
-	} */
 	if err := db.Exec("CREATE TYPE ORG_STATE_ENUM AS ENUM('unverified', 'refused', 'verified', 'suspended');"); err.Error != nil {
-		return err.Error
+		fmt.Sprintln(err.Error.Error())
 	}
 
 	return nil

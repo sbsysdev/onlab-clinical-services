@@ -14,10 +14,10 @@ import (
 // Shared prerequisites
 func MigrateSharedPrerequisites(db *gorm.DB) error {
 	if err := db.Exec("CREATE TYPE COMMON_SCOPE_ENUM AS ENUM('system', 'user', 'org', 'branch');"); err.Error != nil {
-		return err.Error
+		fmt.Sprintln(err.Error.Error())
 	}
 	if err := db.Exec("CREATE TYPE COMMON_STATE_ENUM AS ENUM('active', 'inactive');"); err.Error != nil {
-		return err.Error
+		fmt.Sprintln(err.Error.Error())
 	}
 
 	return nil
