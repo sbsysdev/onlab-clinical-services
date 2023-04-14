@@ -26,7 +26,8 @@ func main() {
 	)
 
 	// Configure migration
-	if os.Args[1] == "migrate" {
+	args := os.Args
+	if len(args) > 1 && args[1] == "migrate" {
 		db.PublicMigration(connection)
 	}
 

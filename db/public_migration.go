@@ -11,11 +11,11 @@ import (
 
 // Public migration
 func PublicMigration(db *gorm.DB) {
-	if err := dbshared.MigrateSharedPrerequisites(db); err != nil {
+	if err := dbpublic.MigratePublicPrerequisites(db); err != nil {
 		fmt.Sprintln(err.Error())
 	}
 
-	if err := dbpublic.MigratePublicPrerequisites(db); err != nil {
+	if err := dbshared.MigrateSharedPrerequisites(db); err != nil {
 		fmt.Sprintln(err.Error())
 	}
 
