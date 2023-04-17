@@ -1,4 +1,4 @@
-package shareddomain
+package authdomain
 
 type LocationRepository interface {
 	GetMunicipalityById(uint16) (Municipality, error)

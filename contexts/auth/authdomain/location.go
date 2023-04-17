@@ -1,4 +1,4 @@
-package shareddomain
+package authdomain
 
 // Municipality Value Object
 type Municipality struct {

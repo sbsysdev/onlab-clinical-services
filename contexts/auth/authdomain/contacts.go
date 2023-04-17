@@ -50,7 +50,7 @@ func CreateEmailList(min uint8, emails ...string) ([]ContactEmail, error) {
 
 // Contact Phone Value Object
 type ContactPhone struct {
-	Country shareddomain.Country
+	Country Country
 	Phone   string
 }
 
@@ -59,7 +59,7 @@ const (
 	ERRORS_CONTACT_PHONE_MIN    shareddomain.DomainError = "ERRORS_CONTACT_PHONE_MIN"
 )
 
-func CreatePhone(country shareddomain.Country, phone string) (ContactPhone, error) {
+func CreatePhone(country Country, phone string) (ContactPhone, error) {
 	validate := validator.New()
 
 	if err := validate.Var(phone, "min=7,max=10,numeric,excludes=.,excludes=0x2C"); err != nil {
@@ -77,7 +77,7 @@ type ContactPhoneRequest struct {
 	Phone   string
 }
 
-func CreatePhoneList(min uint8, locationRepo shareddomain.LocationRepository, phones ...ContactPhoneRequest) ([]ContactPhone, error) {
+func CreatePhoneList(min uint8, locationRepo LocationRepository, phones ...ContactPhoneRequest) ([]ContactPhone, error) {
 	if min == 0 && len(phones) == 1 && phones[0].Country == 0 && len(phones[0].Phone) == 0 {
 		return []ContactPhone{}, nil
 	}
@@ -109,7 +109,7 @@ func CreatePhoneList(min uint8, locationRepo shareddomain.LocationRepository, ph
 
 // Contact Address Value Object
 type ContactAddress struct {
-	Municipality shareddomain.Municipality
+	Municipality Municipality
 	Address      string
 }
 
@@ -118,7 +118,7 @@ const (
 	ERRORS_CONTACT_ADDRESS_MIN   shareddomain.DomainError = "ERRORS_CONTACT_ADDRESS_MIN"
 )
 
-func CreateAddress(municipality shareddomain.Municipality, address string) (ContactAddress, error) {
+func CreateAddress(municipality Municipality, address string) (ContactAddress, error) {
 	if len(address) == 0 {
 		return ContactAddress{}, errors.New(string(ERRORS_CONTACT_ADDRESS_EMPTY))
 	}
@@ -134,7 +134,7 @@ type ContactAddressRequest struct {
 	Address      string
 }
 
-func CreateAddressList(min uint8, locationRepo shareddomain.LocationRepository, addresses ...ContactAddressRequest) ([]ContactAddress, error) {
+func CreateAddressList(min uint8, locationRepo LocationRepository, addresses ...ContactAddressRequest) ([]ContactAddress, error) {
 	if min == 0 && len(addresses) == 1 && addresses[0].Municipality == 0 && len(addresses[0].Address) == 0 {
 		return []ContactAddress{}, nil
 	}
