@@ -3,21 +3,12 @@ package authinfra
 import (
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authdomain"
 	"github.com/OnLab-Clinical/onlab-clinical-services/db/dbpublic"
 	"github.com/OnLab-Clinical/onlab-clinical-services/db/dbshared"
 )
 
 func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User, error) {
-	// Generate hashed password
-	password, err := bcrypt.GenerateFromPassword([]byte(string(patient.User.Password)), 16)
-
-	if err != nil {
-		return dbpublic.User{}, err
-	}
-
 	// Map contacts
 
 	// Contact emails
@@ -47,7 +38,7 @@ func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User,
 	return dbpublic.User{
 		ID:       patient.ID,
 		Name:     string(patient.User.Name),
-		Password: string(password),
+		Password: string(patient.User.Password),
 		Person: dbpublic.Person{
 			Name:    string(patient.Person.Name),
 			Surname: string(patient.Person.Surname),

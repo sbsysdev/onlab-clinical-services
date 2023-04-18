@@ -3,6 +3,8 @@ package authdomain
 import (
 	"errors"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
 )
 
@@ -33,7 +35,13 @@ func CreateUserPassword(password string) (UserPassword, error) {
 		return UserPassword(""), errors.New(string(ERRORS_USER_PASSWORD_EMPTY))
 	}
 
-	return UserPassword(password), nil
+	hashed, err := bcrypt.GenerateFromPassword([]byte(string(password)), 16)
+
+	if err != nil {
+		return UserPassword(""), err
+	}
+
+	return UserPassword(hashed), nil
 }
 
 // User State Value Object
@@ -41,9 +49,9 @@ type UserState string
 
 const (
 	STATES_USER_STATE_UNVERIFIED UserState = "unverified"
-	STATES_USER_STATE_BLOCKED              = "blocked"
-	STATES_USER_STATE_VERIFIED             = "verified"
-	STATES_USER_STATE_SUSPENDED            = "suspended"
+	STATES_USER_STATE_BLOCKED    UserState = "blocked"
+	STATES_USER_STATE_VERIFIED   UserState = "verified"
+	STATES_USER_STATE_SUSPENDED  UserState = "suspended"
 )
 
 const (
@@ -51,7 +59,7 @@ const (
 )
 
 func CreateUserState(state string) (UserState, error) {
-	if state != string(STATES_USER_STATE_UNVERIFIED) && state != STATES_USER_STATE_BLOCKED && state != STATES_USER_STATE_VERIFIED && state != STATES_USER_STATE_SUSPENDED {
+	if state != string(STATES_USER_STATE_UNVERIFIED) && state != string(STATES_USER_STATE_BLOCKED) && state != string(STATES_USER_STATE_VERIFIED) && state != string(STATES_USER_STATE_SUSPENDED) {
 		return UserState(""), errors.New(string(ERRORS_USER_STATE_NOT_VALID))
 	}
 
