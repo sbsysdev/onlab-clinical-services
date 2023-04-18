@@ -12,7 +12,7 @@ type PatientRepository struct {
 	DB *gorm.DB
 }
 
-func (repo *PatientRepository) CreatePatient(patient authdomain.PatientEntity) error {
+func (repo PatientRepository) CreatePatient(patient authdomain.PatientEntity) error {
 	// Get db models
 	user, err := FromPatientEntityToModels(patient)
 

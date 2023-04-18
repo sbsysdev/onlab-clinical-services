@@ -8,6 +8,7 @@ import (
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authapp"
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authctrls"
+	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authinfra"
 )
 
 type AuthModule struct {
@@ -17,7 +18,9 @@ type AuthModule struct {
 }
 
 func (module AuthModule) LoadModule() error {
-	// TODO: Configure repositories
+	// Configure repositories
+	patientRepo := authinfra.PatientRepository{DB: module.Connection}
+	locationRepo := authinfra.LocationRepository{DB: module.Connection}
 
 	// TODO: Configure services
 
@@ -26,7 +29,8 @@ func (module AuthModule) LoadModule() error {
 	// TODO: Configure controllers
 	createPatientController := authctrls.CreatePatientController{
 		CreatePatientUseCase: authapp.CreatePatientUseCase{
-			// TODO: Inject repositories
+			PatientRepository:  patientRepo,
+			LocationRepository: locationRepo,
 		},
 	}
 
