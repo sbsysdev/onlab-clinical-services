@@ -9,24 +9,41 @@ import (
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authapp"
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authctrls"
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authinfra"
+	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
+	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/sharedinfra"
 )
 
 type AuthModule struct {
-	Context    context.Context
-	Connection *gorm.DB
-	Router     *gin.RouterGroup
+	Context                context.Context
+	Connection             *gorm.DB
+	SubscribeEvent         shareddomain.SubscribeDomainEvent
+	ConfigureEventHandlers sharedinfra.ConfigureEventHandlers
+	Router                 *gin.RouterGroup
 }
 
 func (module AuthModule) LoadModule() error {
 	// Configure repositories
+
 	patientRepo := authinfra.PatientRepository{DB: module.Connection}
 	locationRepo := authinfra.LocationRepository{DB: module.Connection}
 
 	// TODO: Configure services
 
-	// TODO: Configure event handlers
+	// Configure event handlers
 
-	// TODO: Configure controllers
+	sendWelcomeEmailOnPatientCreatedEventHandler := authapp.SendWelcomeEmailOnPatientCreatedEventHandler{
+		SubscribeEvent: module.SubscribeEvent,
+	}
+
+	module.ConfigureEventHandlers(
+		// Context
+		module.Context,
+		// Handlers
+		sendWelcomeEmailOnPatientCreatedEventHandler,
+	)
+
+	// Configure controllers
+
 	createPatientController := authctrls.CreatePatientController{
 		CreatePatientUseCase: authapp.CreatePatientUseCase{
 			PatientRepository:  patientRepo,
@@ -35,6 +52,7 @@ func (module AuthModule) LoadModule() error {
 	}
 
 	// Configure routes
+
 	v1 := module.Router.Group("/v1")
 	{
 		v1.POST("/patients", createPatientController.Handle)

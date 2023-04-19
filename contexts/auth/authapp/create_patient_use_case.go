@@ -2,6 +2,7 @@ package authapp
 
 import (
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authdomain"
+	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
 )
 
 // Request
@@ -14,8 +15,11 @@ type CreatePatientRequest struct {
 
 // Use Case
 type CreatePatientUseCase struct {
+	// Repositories
 	PatientRepository  authdomain.PatientRepository
 	LocationRepository authdomain.LocationRepository
+	// Publish Event
+	PublishEvent shareddomain.PublishDomainEvent
 }
 
 func (uc CreatePatientUseCase) Command(request CreatePatientRequest) error {
@@ -103,6 +107,11 @@ func (uc CreatePatientUseCase) Command(request CreatePatientRequest) error {
 		return err
 	}
 
-	// TODO: Dispath PATIENT_CREATED_EVENT
+	// Dispath events
+
+	if err := uc.PublishEvent(authdomain.CreatePatientCreatedEvent(patient)); err != nil {
+		return err
+	}
+
 	return nil
 }

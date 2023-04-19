@@ -41,9 +41,11 @@ func main() {
 
 	// Configure modules
 	auth.AuthModule{
-		Context:    ctx,
-		Connection: connection,
-		Router:     api.Group("/auth"),
+		Context:                ctx,
+		Connection:             connection,
+		SubscribeEvent:         configs.SubscribeDomainEvent,
+		ConfigureEventHandlers: configs.ConfigureEventHandlers,
+		Router:                 api.Group("/auth"),
 	}.LoadModule()
 
 	router.Run(":8080")
