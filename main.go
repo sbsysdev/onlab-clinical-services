@@ -44,6 +44,7 @@ func main() {
 		Context:                ctx,
 		Connection:             connection,
 		SubscribeEvent:         configs.SubscribeDomainEvent,
+		PublishEvent:           configs.PublishDomainEvent,
 		ConfigureEventHandlers: configs.ConfigureEventHandlers,
 		Router:                 api.Group("/auth"),
 	}.LoadModule()

@@ -17,6 +17,7 @@ type AuthModule struct {
 	Context                context.Context
 	Connection             *gorm.DB
 	SubscribeEvent         shareddomain.SubscribeDomainEvent
+	PublishEvent           shareddomain.PublishDomainEvent
 	ConfigureEventHandlers sharedinfra.ConfigureEventHandlers
 	Router                 *gin.RouterGroup
 }
@@ -46,8 +47,11 @@ func (module AuthModule) LoadModule() error {
 
 	createPatientController := authctrls.CreatePatientController{
 		CreatePatientUseCase: authapp.CreatePatientUseCase{
+			// Repositories
 			PatientRepository:  patientRepo,
 			LocationRepository: locationRepo,
+			// Publisher
+			PublishEvent: module.PublishEvent,
 		},
 	}
 
