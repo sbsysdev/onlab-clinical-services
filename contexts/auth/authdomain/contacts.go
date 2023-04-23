@@ -21,6 +21,8 @@ func CreateEmail(email string) (ContactEmail, error) {
 		return ContactEmail(""), errors.New(string(ERRORS_CONTACT_EMAIL_EMPTY))
 	}
 
+	// TODO: Validate email format
+
 	return ContactEmail(email), nil
 }
 
