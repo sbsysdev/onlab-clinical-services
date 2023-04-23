@@ -35,6 +35,8 @@ func CreateUserPassword(password string) (UserPassword, error) {
 		return UserPassword(""), errors.New(string(ERRORS_USER_PASSWORD_EMPTY))
 	}
 
+	// TODO: Validate min security format
+
 	hashed, err := bcrypt.GenerateFromPassword([]byte(string(password)), 16)
 
 	if err != nil {
