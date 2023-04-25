@@ -1,8 +1,6 @@
 package authinfra
 
 import (
-	"database/sql"
-
 	"gorm.io/gorm"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authdomain"
@@ -21,15 +19,19 @@ func (repo PatientRepository) CreatePatient(patient authdomain.PatientEntity) er
 	}
 
 	// Store patient
-	transactionErr := repo.DB.Transaction(func(tx *gorm.DB) error {
-		tx.Save(&user)
+	tx := repo.DB.Begin()
 
-		return nil
-	}, &sql.TxOptions{})
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
-	if transactionErr != nil {
-		return transactionErr
+	if txErr := tx.Save(&user).Error; txErr != nil {
+		tx.Rollback()
+
+		return txErr
 	}
 
-	return nil
+	return tx.Commit().Error
 }

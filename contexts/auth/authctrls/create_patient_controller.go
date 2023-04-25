@@ -19,8 +19,8 @@ func (ctrl CreatePatientController) Handle(ctx *gin.Context) {
 		// lang := ctx.GetHeader("Accept-Language")
 
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"status": false,
-			//"request": utils.RequestValidator(err, errorMsgs),
+			"status":  false,
+			"message": err.Error(),
 		})
 
 		return
@@ -43,6 +43,5 @@ func (ctrl CreatePatientController) Handle(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"status": true,
-		//"message": shared.MESSAGES_CREATED,
 	})
 }
