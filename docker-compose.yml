@@ -12,12 +12,14 @@ services:
       - postgresql:/var/lib/postgresql/data
 
   pgadmin:
-    image: dpage/pgadmin4:6.21
+    image: dpage/pgadmin4:7.0
     restart: always
     env_file:
       - .env.pgadmin.local
     ports:
       - "5050:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
 
   app:
     build:
@@ -36,4 +38,6 @@ services:
 
 volumes:
   postgresql:
+    driver: local
+  pgadmin:
     driver: local
