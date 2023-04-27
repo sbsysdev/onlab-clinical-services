@@ -21,23 +21,7 @@ services:
     volumes:
       - pgadmin:/var/lib/pgadmin
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: dev
-    restart: always
-    ports:
-      - "8080:8080"
-    env_file:
-      - .env.app.local
-    depends_on:
-      - postgresql
-    networks:
-      - default
-
 volumes:
   postgresql:
-    driver: local
   pgadmin:
-    driver: local
+
