@@ -44,7 +44,7 @@ func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User,
 			Surname: string(patient.Person.Surname),
 			Birth:   time.Time(patient.Person.Birth),
 			Sex:     string(patient.Person.Sex),
-			Ind: dbshared.IdentityDocument{
+			Nid: dbshared.IdentityDocument{
 				Number: string(patient.NID),
 			},
 		},

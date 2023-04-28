@@ -12,7 +12,8 @@ import (
 type UserName string
 
 const (
-	ERRORS_USER_NAME_EMPTY shareddomain.DomainError = "ERRORS_USER_NAME_EMPTY"
+	ERRORS_USER_NAME_EMPTY         shareddomain.DomainError = "ERRORS_USER_NAME_EMPTY"
+	ERRORS_USER_NAME_NOT_AVAILABLE shareddomain.DomainError = "ERRORS_USER_NAME_NOT_AVAILABLE"
 )
 
 func CreateUserName(name string) (UserName, error) {

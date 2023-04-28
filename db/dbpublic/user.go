@@ -19,7 +19,7 @@ type Person struct {
 	Surname string                    `json:"surname"`
 	Birth   time.Time                 `json:"birth"`
 	Sex     string                    `json:"sex"`
-	Ind     dbshared.IdentityDocument `json:"ind"`
+	Nid     dbshared.IdentityDocument `json:"nid"`
 	Hpc     dbshared.IdentityDocument `json:"hpc"`
 }
 

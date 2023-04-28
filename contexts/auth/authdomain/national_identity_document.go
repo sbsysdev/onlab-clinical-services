@@ -16,9 +16,10 @@ type NationalIdentityDocument struct {
 }
 
 const (
-	ERRORS_NID_NUMBER_EMPTY shareddomain.DomainError = "ERRORS_NID_NUMBER_EMPTY"
-	ERRORS_NID_FRONT_EMPTY  shareddomain.DomainError = "ERRORS_NID_FRONT_EMPTY"
-	ERRORS_NID_BACK_EMPTY   shareddomain.DomainError = "ERRORS_NID_BACK_EMPTY"
+	ERRORS_NID_NUMBER_EMPTY  shareddomain.DomainError = "ERRORS_NID_NUMBER_EMPTY"
+	ERRORS_NID_NOT_AVAILABLE shareddomain.DomainError = "ERRORS_NID_NOT_AVAILABLE"
+	ERRORS_NID_FRONT_EMPTY   shareddomain.DomainError = "ERRORS_NID_FRONT_EMPTY"
+	ERRORS_NID_BACK_EMPTY    shareddomain.DomainError = "ERRORS_NID_BACK_EMPTY"
 )
 
 func CreateNID(number string, front, back *multipart.FileHeader) (NationalIdentityDocument, error) {
