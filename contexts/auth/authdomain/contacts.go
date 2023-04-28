@@ -37,14 +37,14 @@ func CreateEmailList(min uint8, emails ...string) ([]ContactEmail, error) {
 
 	emailList := make([]ContactEmail, len(emails))
 
-	for _, v := range emails {
+	for i, v := range emails {
 		email, err := CreateEmail(v)
 
 		if err != nil {
 			return []ContactEmail{}, err
 		}
 
-		emailList = append(emailList, email)
+		emailList[i] = email
 	}
 
 	return emailList, nil
@@ -90,7 +90,7 @@ func CreatePhoneList(min uint8, locationRepo LocationRepository, phones ...Conta
 
 	phoneList := make([]ContactPhone, len(phones))
 
-	for _, v := range phones {
+	for i, v := range phones {
 		country, countryErr := locationRepo.GetCountryById(v.Country, false, false)
 
 		if countryErr != nil {
@@ -103,7 +103,7 @@ func CreatePhoneList(min uint8, locationRepo LocationRepository, phones ...Conta
 			return []ContactPhone{}, phoneErr
 		}
 
-		phoneList = append(phoneList, phone)
+		phoneList[i] = phone
 	}
 
 	return phoneList, nil
@@ -147,7 +147,7 @@ func CreateAddressList(min uint8, locationRepo LocationRepository, addresses ...
 
 	addressList := make([]ContactAddress, len(addresses))
 
-	for _, v := range addresses {
+	for i, v := range addresses {
 		municipality, municipalityErr := locationRepo.GetMunicipalityById(v.Municipality)
 
 		if municipalityErr != nil {
@@ -160,7 +160,7 @@ func CreateAddressList(min uint8, locationRepo LocationRepository, addresses ...
 			return []ContactAddress{}, addressErr
 		}
 
-		addressList = append(addressList, address)
+		addressList[i] = address
 	}
 
 	return addressList, nil

@@ -13,26 +13,26 @@ func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User,
 
 	// Contact emails
 	emails := make([]string, len(patient.Contacts.Emails))
-	for _, v := range patient.Contacts.Emails {
-		emails = append(emails, string(v))
+	for i, v := range patient.Contacts.Emails {
+		emails[i] = string(v)
 	}
 
 	// Contact phones
 	phones := make([]dbshared.Phone, len(patient.Contacts.Phones))
-	for _, v := range patient.Contacts.Phones {
-		phones = append(phones, dbshared.Phone{
+	for i, v := range patient.Contacts.Phones {
+		phones[i] = dbshared.Phone{
 			Country: v.Country.Id,
 			Phone:   v.Phone,
-		})
+		}
 	}
 
 	// Contact addresses
 	addresses := make([]dbshared.Address, len(patient.Contacts.Addresses))
-	for _, v := range patient.Contacts.Addresses {
-		addresses = append(addresses, dbshared.Address{
+	for i, v := range patient.Contacts.Addresses {
+		addresses[i] = dbshared.Address{
 			Municipality: v.Municipality.Id,
 			Address:      v.Address,
-		})
+		}
 	}
 
 	return dbpublic.User{
