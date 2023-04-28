@@ -2,6 +2,7 @@ package authdomain
 
 import (
 	"errors"
+	"regexp"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -28,7 +29,8 @@ func CreateUserName(name string) (UserName, error) {
 type UserPassword string
 
 const (
-	ERRORS_USER_PASSWORD_EMPTY shareddomain.DomainError = "ERRORS_USER_PASSWORD_EMPTY"
+	ERRORS_USER_PASSWORD_EMPTY  shareddomain.DomainError = "ERRORS_USER_PASSWORD_EMPTY"
+	ERRORS_USER_PASSWORD_FORMAT shareddomain.DomainError = "ERRORS_USER_PASSWORD_FORMAT"
 )
 
 func CreateUserPassword(password string) (UserPassword, error) {
@@ -36,7 +38,22 @@ func CreateUserPassword(password string) (UserPassword, error) {
 		return UserPassword(""), errors.New(string(ERRORS_USER_PASSWORD_EMPTY))
 	}
 
-	// TODO: Validate min security format
+	// Validate min security format
+	if matched, err := regexp.MatchString("^.*[a-z]+.*$", password); !matched || err != nil {
+		return UserPassword(""), errors.New(string(ERRORS_USER_PASSWORD_FORMAT))
+	}
+	if matched, err := regexp.MatchString("^.*[A-Z]+.*$", password); !matched || err != nil {
+		return UserPassword(""), errors.New(string(ERRORS_USER_PASSWORD_FORMAT))
+	}
+	if matched, err := regexp.MatchString("^.*\\d+.*$", password); !matched || err != nil {
+		return UserPassword(""), errors.New(string(ERRORS_USER_PASSWORD_FORMAT))
+	}
+	if matched, err := regexp.MatchString("^.*\\W+.*$", password); !matched || err != nil {
+		return UserPassword(""), errors.New(string(ERRORS_USER_PASSWORD_FORMAT))
+	}
+	if matched, err := regexp.MatchString("^.{8,32}$", password); !matched || err != nil {
+		return UserPassword(""), errors.New(string(ERRORS_USER_PASSWORD_FORMAT))
+	}
 
 	hashed, err := bcrypt.GenerateFromPassword([]byte(string(password)), bcrypt.DefaultCost)
 
