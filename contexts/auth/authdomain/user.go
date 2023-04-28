@@ -71,9 +71,9 @@ func CreateUserState(state string) (UserState, error) {
 
 // User Value Object
 type User struct {
-	Name     UserName
-	Password UserPassword
-	State    UserState
+	Name     UserName     `json:"name"`
+	Password UserPassword `json:"password"`
+	State    UserState    `json:"state"`
 }
 
 // User Value Object Factory

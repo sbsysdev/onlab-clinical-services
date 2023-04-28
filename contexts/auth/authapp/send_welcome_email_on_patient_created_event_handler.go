@@ -37,6 +37,9 @@ func (handler SendWelcomeEmailOnPatientCreatedEventHandler) Handle(ctx context.C
 
 func (handler SendWelcomeEmailOnPatientCreatedEventHandler) sendWelcomeEmail(patient authdomain.PatientCreatedEvent) error {
 	fmt.Println("SendWelcomeEmailOnPatientCreatedEventHandler", patient)
+	fmt.Println("Name", patient.EventName())
+	fmt.Println("Meta", patient.EventMetadata())
+	fmt.Println("Ocurred", patient.OccurredAt)
 
 	return nil
 }

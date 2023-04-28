@@ -52,8 +52,8 @@ func CreateEmailList(min uint8, emails ...string) ([]ContactEmail, error) {
 
 // Contact Phone Value Object
 type ContactPhone struct {
-	Country Country
-	Phone   string
+	Country Country `json:"country"`
+	Phone   string  `json:"phone"`
 }
 
 const (
@@ -111,8 +111,8 @@ func CreatePhoneList(min uint8, locationRepo LocationRepository, phones ...Conta
 
 // Contact Address Value Object
 type ContactAddress struct {
-	Municipality Municipality
-	Address      string
+	Municipality Municipality `json:"municipality"`
+	Address      string       `json:"address"`
 }
 
 const (
@@ -168,9 +168,9 @@ func CreateAddressList(min uint8, locationRepo LocationRepository, addresses ...
 
 // Contacts Value Object
 type Contacts struct {
-	Emails    []ContactEmail
-	Phones    []ContactPhone
-	Addresses []ContactAddress
+	Emails    []ContactEmail   `json:"emails"`
+	Phones    []ContactPhone   `json:"phones"`
+	Addresses []ContactAddress `json:"addresses"`
 }
 
 // Contacts Value Object Factory

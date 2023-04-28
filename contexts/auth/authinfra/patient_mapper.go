@@ -55,8 +55,8 @@ func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User,
 		},
 		State: string(patient.User.State),
 		Time: dbshared.TimeAt{
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
+			CreatedAt: time.Now().UTC(),
+			UpdatedAt: time.Now().UTC(),
 		},
 	}, nil
 }

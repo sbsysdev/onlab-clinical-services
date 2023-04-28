@@ -46,7 +46,7 @@ const (
 )
 
 func CreatePersonBirth(birth time.Time) (PersonBirth, error) {
-	if birth.After(time.Now()) {
+	if birth.After(time.Now().UTC()) {
 		return PersonBirth(birth), errors.New(string(ERRORS_PERSON_BIRTH_NOT_VALID))
 	}
 
@@ -54,7 +54,7 @@ func CreatePersonBirth(birth time.Time) (PersonBirth, error) {
 }
 
 func CreatePersonBirthAdult(birth time.Time, minAdult uint8) (PersonBirth, error) {
-	if birth.AddDate(int(minAdult), 0, 0).After(time.Now()) {
+	if birth.AddDate(int(minAdult), 0, 0).After(time.Now().UTC()) {
 		return PersonBirth(birth), errors.New(string(ERRORS_PERSON_BIRTH_UNDER_AGE))
 	}
 
@@ -83,10 +83,10 @@ func CreatePersonSex(sex string) (PersonSex, error) {
 
 // Person Value Object
 type Person struct {
-	Name    PersonName
-	Surname PersonSurname
-	Birth   PersonBirth
-	Sex     PersonSex
+	Name    PersonName    `json:"name"`
+	Surname PersonSurname `json:"surname"`
+	Birth   PersonBirth   `json:"birth"`
+	Sex     PersonSex     `json:"sex"`
 }
 
 // Person Value Object Factory

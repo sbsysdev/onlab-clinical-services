@@ -11,6 +11,7 @@ type DomainEvent string
 
 type Event interface {
 	EventName() DomainEvent
+	EventMetadata() interface{}
 	EventOccurredAt() time.Time
 }
 

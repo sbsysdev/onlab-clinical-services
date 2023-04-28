@@ -14,14 +14,15 @@ const (
 
 // PatientCreatedEvent
 type PatientCreatedEvent struct {
-	ID         string    `json:"id"`
-	Name       string    `json:"name"`
-	Surname    string    `json:"surname"`
-	OccurredAt time.Time `json:"occurredAt"`
+	Patient    PatientEntity `json:"patient"`
+	OccurredAt time.Time     `json:"occurredAt"`
 }
 
 func (PatientCreatedEvent) EventName() shareddomain.DomainEvent {
 	return EVENTS_PATIENT_CREATED_EVENT
+}
+func (event PatientCreatedEvent) EventMetadata() interface{} {
+	return event.Patient
 }
 func (event PatientCreatedEvent) EventOccurredAt() time.Time {
 	return event.OccurredAt
@@ -29,9 +30,7 @@ func (event PatientCreatedEvent) EventOccurredAt() time.Time {
 
 func CreatePatientCreatedEvent(patient PatientEntity) PatientCreatedEvent {
 	return PatientCreatedEvent{
-		ID:         patient.ID,
-		Name:       string(patient.Person.Name),
-		Surname:    string(patient.Person.Surname),
-		OccurredAt: time.Now(),
+		Patient:    patient,
+		OccurredAt: time.Now().UTC(),
 	}
 }

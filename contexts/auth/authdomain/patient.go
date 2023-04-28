@@ -4,11 +4,11 @@ import "github.com/google/uuid"
 
 // Patient Entity
 type PatientEntity struct {
-	ID       string
-	Person   Person
-	NID      NationalIdentityDocumentNumber
-	User     User
-	Contacts Contacts
+	ID       string                         `json:"id"`
+	Person   Person                         `json:"person"`
+	NID      NationalIdentityDocumentNumber `json:"nid"`
+	User     User                           `json:"user"`
+	Contacts Contacts                       `json:"contacts"`
 }
 
 // Patient Entity Factory
