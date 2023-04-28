@@ -12,8 +12,9 @@ import (
 type ContactEmail string
 
 const (
-	ERRORS_CONTACT_EMAIL_EMPTY shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_EMPTY"
-	ERRORS_CONTACT_EMAIL_MIN   shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_MIN"
+	ERRORS_CONTACT_EMAIL_EMPTY  shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_EMPTY"
+	ERRORS_CONTACT_EMAIL_FORMAT shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_FORMAT"
+	ERRORS_CONTACT_EMAIL_MIN    shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_MIN"
 )
 
 func CreateEmail(email string) (ContactEmail, error) {
@@ -21,7 +22,12 @@ func CreateEmail(email string) (ContactEmail, error) {
 		return ContactEmail(""), errors.New(string(ERRORS_CONTACT_EMAIL_EMPTY))
 	}
 
-	// TODO: Validate email format
+	// Validate email format
+	validate := validator.New()
+
+	if err := validate.Var(email, "email"); err != nil {
+		return ContactEmail(""), errors.New(string(ERRORS_CONTACT_EMAIL_FORMAT))
+	}
 
 	return ContactEmail(email), nil
 }
