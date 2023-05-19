@@ -1,8 +1,6 @@
 package dbpublic
 
 import (
-	"fmt"
-
 	"gorm.io/gorm"
 )
 
@@ -11,14 +9,25 @@ func MigratePublicPrerequisites(db *gorm.DB) error {
 	if err := db.Exec("CREATE SCHEMA IF NOT EXISTS public;"); err.Error != nil {
 		return err.Error
 	}
+
 	if err := db.Exec("SET search_path=public;"); err.Error != nil {
 		return err.Error
 	}
-	if err := db.Exec("CREATE TYPE USER_STATE_ENUM AS ENUM('unverified', 'blocked', 'verified', 'suspended');"); err.Error != nil {
-		fmt.Sprintln(err.Error.Error())
+
+	if err := db.Exec(`DO $$ BEGIN
+	IF NOT EXISTS (SELECT FROM pg_type WHERE typname ILIKE 'USER_STATE_ENUM') THEN
+	CREATE TYPE USER_STATE_ENUM AS ENUM('unverified', 'blocked', 'verified', 'suspended');
+	END IF;
+	END$$;`).Error; err != nil {
+		return err
 	}
-	if err := db.Exec("CREATE TYPE ORG_STATE_ENUM AS ENUM('unverified', 'refused', 'verified', 'suspended');"); err.Error != nil {
-		fmt.Sprintln(err.Error.Error())
+
+	if err := db.Exec(`DO $$ BEGIN
+	IF NOT EXISTS (SELECT FROM pg_type WHERE typname ILIKE 'ORG_STATE_ENUM') THEN
+	CREATE TYPE ORG_STATE_ENUM AS ENUM('unverified', 'refused', 'verified', 'suspended');
+	END IF;
+	END$$;`).Error; err != nil {
+		return err
 	}
 
 	return nil

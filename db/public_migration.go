@@ -1,6 +1,8 @@
 package db
 
 import (
+	"fmt"
+
 	"gorm.io/gorm"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/db/dbpublic"
@@ -36,6 +38,6 @@ func PublicMigration(db *gorm.DB) {
 		&dbpublic.Organization{},
 		&dbpublic.UserRoleOrganization{},
 	); err != nil {
-		panic(err)
+		fmt.Println(err.Error())
 	}
 }

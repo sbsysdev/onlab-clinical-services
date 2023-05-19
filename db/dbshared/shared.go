@@ -13,11 +13,20 @@ import (
 
 // Shared prerequisites
 func MigrateSharedPrerequisites(db *gorm.DB) error {
-	if err := db.Exec("CREATE TYPE COMMON_SCOPE_ENUM AS ENUM('system', 'user', 'org', 'branch');"); err.Error != nil {
-		fmt.Sprintln(err.Error.Error())
+	if err := db.Exec(`DO $$ BEGIN
+	IF NOT EXISTS (SELECT FROM pg_type WHERE typname ILIKE 'COMMON_SCOPE_ENUM') THEN
+	CREATE TYPE COMMON_SCOPE_ENUM AS ENUM('system', 'user', 'org', 'branch');
+	END IF;
+	END$$;`).Error; err != nil {
+		return err
 	}
-	if err := db.Exec("CREATE TYPE COMMON_STATE_ENUM AS ENUM('active', 'inactive');"); err.Error != nil {
-		fmt.Sprintln(err.Error.Error())
+
+	if err := db.Exec(`DO $$ BEGIN
+	IF NOT EXISTS (SELECT FROM pg_type WHERE typname ILIKE 'COMMON_STATE_ENUM') THEN
+	CREATE TYPE COMMON_STATE_ENUM AS ENUM('active', 'inactive');
+	END IF;
+	END$$;`).Error; err != nil {
+		return err
 	}
 
 	return nil
