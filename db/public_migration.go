@@ -20,29 +20,66 @@ func PublicMigration(db *gorm.DB) {
 	}
 
 	// Migrate schemas
+
+	// Role echemas
 	if err := db.AutoMigrate(
-		// Role echemas
 		&dbshared.Operation{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
+	if err := db.AutoMigrate(
 		&dbshared.Permission{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
+	if err := db.AutoMigrate(
 		&dbshared.PermissionOperation{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
 
+	if err := db.AutoMigrate(
 		&dbpublic.Role{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
+	if err := db.AutoMigrate(
 		&dbshared.RolePermission{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
 
-		// User schemas
+	// User schemas
+	if err := db.AutoMigrate(
 		&dbpublic.User{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
+	if err := db.AutoMigrate(
 		&dbpublic.UserRole{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
+	if err := db.AutoMigrate(
 		&dbpublic.UserRoleUser{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
 
-		// Organization schemas
+	// Organization schemas
+	if err := db.AutoMigrate(
 		&dbpublic.Organization{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
+	if err := db.AutoMigrate(
 		&dbpublic.UserRoleOrganization{},
 	); err != nil {
 		fmt.Println(err.Error())
 	}
 
 	// migrate public seeds
-	if err := dbpublic.MigratePublicSystemRoles(); err != nil {
+	if err := dbpublic.MigratePublicSystemRoles(db); err != nil {
 		panic(err)
 	}
 }

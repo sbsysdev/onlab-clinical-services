@@ -15,6 +15,7 @@ const (
 	ALIAS_PATIENT      RoleAlias = "patient"
 	ALIAS_OWNER        RoleAlias = "owner"
 	ALIAS_COLLABORATOR RoleAlias = "collaborator"
+	ALIAS_PARENT       RoleAlias = "parent"
 )
 
 const (
@@ -27,7 +28,7 @@ func CreateRoleAlias(alias string) (RoleAlias, error) {
 		return RoleAlias(""), errors.New(string(ERRORS_ROLE_ALIAS_EMPTY))
 	}
 
-	if alias != string(ALIAS_PATIENT) && alias != string(ALIAS_OWNER) && alias != string(ALIAS_COLLABORATOR) {
+	if alias != string(ALIAS_PATIENT) && alias != string(ALIAS_OWNER) && alias != string(ALIAS_COLLABORATOR) && alias != string(ALIAS_PARENT) {
 		return RoleAlias(""), errors.New(string(ERRORS_ROLE_ALIAS_NOT_VALID))
 	}
 
