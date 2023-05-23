@@ -15,7 +15,7 @@ type PatientRepository struct {
 
 func (repo PatientRepository) CreatePatient(patient authdomain.PatientEntity) error {
 	// Get db models
-	user, err := FromPatientEntityToModels(patient)
+	user, userRoles, err := FromPatientEntityToModels(patient)
 
 	if err != nil {
 		return err
@@ -56,6 +56,15 @@ func (repo PatientRepository) CreatePatient(patient authdomain.PatientEntity) er
 		tx.Rollback()
 
 		return txErr
+	}
+
+	// Add roles to stored user
+	for _, userRole := range userRoles {
+		if txErr := tx.Save(&userRole).Error; txErr != nil {
+			tx.Rollback()
+
+			return txErr
+		}
 	}
 
 	// Try to commit all changes

@@ -17,6 +17,7 @@ type CreatePatientRequest struct {
 type CreatePatientUseCase struct {
 	// Repositories
 	PatientRepository  authdomain.PatientRepository
+	RoleRepository     authdomain.RoleRepository
 	LocationRepository authdomain.LocationRepository
 	// Publish Event
 	PublishEvent shareddomain.PublishDomainEvent
@@ -97,9 +98,16 @@ func (uc CreatePatientUseCase) Command(request CreatePatientRequest) error {
 
 	contacts := authdomain.CreateContacts(emails, phones, addresss)
 
+	// Role entity
+	patientRoles, patientRolesErr := uc.RoleRepository.GetSystemRolesByAlias([]authdomain.RoleAlias{authdomain.ALIAS_PATIENT})
+
+	if patientRolesErr != nil {
+		return patientRolesErr
+	}
+
 	// Patient entity
 
-	patient := authdomain.CreatePatient(person, nid, user, contacts)
+	patient := authdomain.CreatePatient(person, nid, user, contacts, patientRoles)
 
 	//Store patient
 

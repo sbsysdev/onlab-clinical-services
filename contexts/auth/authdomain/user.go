@@ -68,10 +68,10 @@ func CreateUserPassword(password string) (UserPassword, error) {
 type UserState string
 
 const (
-	STATES_USER_STATE_UNVERIFIED UserState = "unverified"
-	STATES_USER_STATE_BLOCKED    UserState = "blocked"
-	STATES_USER_STATE_VERIFIED   UserState = "verified"
-	STATES_USER_STATE_SUSPENDED  UserState = "suspended"
+	USER_STATE_UNVERIFIED UserState = "unverified"
+	USER_STATE_BLOCKED    UserState = "blocked"
+	USER_STATE_VERIFIED   UserState = "verified"
+	USER_STATE_SUSPENDED  UserState = "suspended"
 )
 
 const (
@@ -79,7 +79,7 @@ const (
 )
 
 func CreateUserState(state string) (UserState, error) {
-	if state != string(STATES_USER_STATE_UNVERIFIED) && state != string(STATES_USER_STATE_BLOCKED) && state != string(STATES_USER_STATE_VERIFIED) && state != string(STATES_USER_STATE_SUSPENDED) {
+	if state != string(USER_STATE_UNVERIFIED) && state != string(USER_STATE_BLOCKED) && state != string(USER_STATE_VERIFIED) && state != string(USER_STATE_SUSPENDED) {
 		return UserState(""), errors.New(string(ERRORS_USER_STATE_NOT_VALID))
 	}
 
@@ -98,6 +98,6 @@ func CreateUser(name UserName, password UserPassword) User {
 	return User{
 		Name:     name,
 		Password: password,
-		State:    STATES_USER_STATE_UNVERIFIED,
+		State:    USER_STATE_UNVERIFIED,
 	}
 }

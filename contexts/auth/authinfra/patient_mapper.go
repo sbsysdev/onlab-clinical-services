@@ -8,7 +8,7 @@ import (
 	"github.com/OnLab-Clinical/onlab-clinical-services/db/dbshared"
 )
 
-func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User, error) {
+func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User, []dbpublic.UserRole, error) {
 	// Map contacts
 
 	// Contact emails
@@ -35,6 +35,15 @@ func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User,
 		}
 	}
 
+	// User roles
+	userRoles := make([]dbpublic.UserRole, len(patient.Roles))
+	for i, v := range patient.Roles {
+		userRoles[i] = dbpublic.UserRole{
+			UserID: patient.ID,
+			RoleID: v.ID,
+		}
+	}
+
 	return dbpublic.User{
 		ID:       patient.ID,
 		Name:     string(patient.User.Name),
@@ -58,5 +67,5 @@ func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User,
 			CreatedAt: time.Now().UTC(),
 			UpdatedAt: time.Now().UTC(),
 		},
-	}, nil
+	}, userRoles, nil
 }

@@ -40,4 +40,9 @@ func PublicMigration(db *gorm.DB) {
 	); err != nil {
 		fmt.Println(err.Error())
 	}
+
+	// migrate public seeds
+	if err := dbpublic.MigratePublicSystemRoles(); err != nil {
+		panic(err)
+	}
 }
