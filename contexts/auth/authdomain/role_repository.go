@@ -1,5 +1,5 @@
 package authdomain
 
 type RoleRepository interface {
-	GetSystemRolesByAlias([]RoleAlias) ([]SystemRoleEntity, error)
+	GetAliasRolesByAlias([]RoleAlias) ([]AliasRoleEntity, error)
 }

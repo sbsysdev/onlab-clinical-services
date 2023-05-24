@@ -82,4 +82,7 @@ func PublicMigration(db *gorm.DB) {
 	if err := dbpublic.MigratePublicSystemRoles(db); err != nil {
 		panic(err)
 	}
+	if err := dbpublic.MigratePublicUserRoles(db); err != nil {
+		panic(err)
+	}
 }

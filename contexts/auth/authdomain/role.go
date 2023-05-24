@@ -15,7 +15,10 @@ const (
 	ALIAS_PATIENT      RoleAlias = "patient"
 	ALIAS_OWNER        RoleAlias = "owner"
 	ALIAS_COLLABORATOR RoleAlias = "collaborator"
-	ALIAS_PARENT       RoleAlias = "parent"
+)
+
+const (
+	ALIAS_PARENT RoleAlias = "parent"
 )
 
 const (
@@ -109,17 +112,12 @@ func CreateRoleState(state string) (RoleState, error) {
 	return RoleState(state), nil
 }
 
-// Role entity
+// Role Entity
 type RoleEntity struct {
 	ID    string    `json:"id"`
 	Name  RoleName  `json:"name"`
 	Scope RoleScope `json:"scope"`
 	State RoleState `json:"state"`
-}
-
-type SystemRoleEntity struct {
-	Alias      RoleAlias `json:"alias"`
-	RoleEntity `json:"role"`
 }
 
 // Role Entity Factory
@@ -132,22 +130,81 @@ func CreateRoleEntity(name RoleName, scope RoleScope, state RoleState) RoleEntit
 	}
 }
 
+/* func FetchRoleEntity(id string, name RoleName, scope RoleScope, state RoleState) RoleEntity {
+	return RoleEntity{
+		ID:    id,
+		Name:  name,
+		Scope: scope,
+		State: state,
+	}
+} */
+
+// System Role Entity & User Role Entity
+type AliasRoleEntity struct {
+	Alias      RoleAlias `json:"alias"`
+	RoleEntity `json:"role"`
+}
+
+// System Role Entity Factory
 const (
+	ERRORS_SYSTEM_ROLE_ALIAS_NOT_VALID shareddomain.DomainError = "ERRORS_SYSTEM_ROLE_ALIAS_NOT_VALID"
 	ERRORS_SYSTEM_ROLE_SCOPE_NOT_VALID shareddomain.DomainError = "ERRORS_SYSTEM_ROLE_SCOPE_NOT_VALID"
 )
 
-func CreateSystemRole(id string, alias RoleAlias, name RoleName, scope RoleScope, state RoleState) (SystemRoleEntity, error) {
-	if scope != SCOPE_SYSTEM && scope != SCOPE_USER {
-		return SystemRoleEntity{}, errors.New(string(ERRORS_SYSTEM_ROLE_SCOPE_NOT_VALID))
+func CreateSystemRole(alias RoleAlias, name RoleName) (AliasRoleEntity, error) {
+	if alias != ALIAS_PATIENT && alias != ALIAS_OWNER && alias != ALIAS_COLLABORATOR {
+		return AliasRoleEntity{}, errors.New(string(ERRORS_SYSTEM_ROLE_ALIAS_NOT_VALID))
 	}
 
-	return SystemRoleEntity{
-		Alias: alias,
-		RoleEntity: RoleEntity{
-			ID:    id,
-			Name:  name,
-			Scope: scope,
-			State: state,
-		},
+	return AliasRoleEntity{
+		Alias:      alias,
+		RoleEntity: CreateRoleEntity(name, SCOPE_SYSTEM, ROLE_STATE_ACTIVE),
 	}, nil
 }
+
+/* func FetchSystemRole(id string, alias RoleAlias, name RoleName, scope RoleScope, state RoleState) (AliasRoleEntity, error) {
+	if alias != ALIAS_PATIENT && alias != ALIAS_OWNER && alias != ALIAS_COLLABORATOR {
+		return AliasRoleEntity{}, errors.New(string(ERRORS_SYSTEM_ROLE_ALIAS_NOT_VALID))
+	}
+
+	if scope != SCOPE_SYSTEM {
+		return AliasRoleEntity{}, errors.New(string(ERRORS_SYSTEM_ROLE_SCOPE_NOT_VALID))
+	}
+
+	return AliasRoleEntity{
+		Alias:      alias,
+		RoleEntity: FetchRoleEntity(id, name, scope, state),
+	}, nil
+} */
+
+// User Role Entity Factory
+const (
+	ERRORS_USER_ROLE_ALIAS_NOT_VALID shareddomain.DomainError = "ERRORS_USER_ROLE_ALIAS_NOT_VALID"
+	ERRORS_USER_ROLE_SCOPE_NOT_VALID shareddomain.DomainError = "ERRORS_USER_ROLE_SCOPE_NOT_VALID"
+)
+
+func CreateUserRole(alias RoleAlias, name RoleName) (AliasRoleEntity, error) {
+	if alias != ALIAS_PARENT {
+		return AliasRoleEntity{}, errors.New(string(ERRORS_USER_ROLE_ALIAS_NOT_VALID))
+	}
+
+	return AliasRoleEntity{
+		Alias:      alias,
+		RoleEntity: CreateRoleEntity(name, SCOPE_USER, ROLE_STATE_ACTIVE),
+	}, nil
+}
+
+/* func FetchUserRole(id string, alias RoleAlias, name RoleName, scope RoleScope, state RoleState) (AliasRoleEntity, error) {
+	if alias != ALIAS_PARENT {
+		return AliasRoleEntity{}, errors.New(string(ERRORS_USER_ROLE_ALIAS_NOT_VALID))
+	}
+
+	if scope != SCOPE_USER {
+		return AliasRoleEntity{}, errors.New(string(ERRORS_USER_ROLE_SCOPE_NOT_VALID))
+	}
+
+	return AliasRoleEntity{
+		Alias:      alias,
+		RoleEntity: FetchRoleEntity(id, name, scope, state),
+	}, nil
+} */

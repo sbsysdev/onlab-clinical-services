@@ -26,6 +26,7 @@ func (module AuthModule) LoadModule() error {
 	// Configure repositories
 
 	patientRepo := authinfra.PatientRepository{DB: module.Connection}
+	roleRepo := authinfra.RoleRepository{DB: module.Connection}
 	locationRepo := authinfra.LocationRepository{DB: module.Connection}
 
 	// TODO: Configure services
@@ -49,6 +50,7 @@ func (module AuthModule) LoadModule() error {
 		CreatePatientUseCase: authapp.CreatePatientUseCase{
 			// Repositories
 			PatientRepository:  patientRepo,
+			RoleRepository:     roleRepo,
 			LocationRepository: locationRepo,
 			// Publisher
 			PublishEvent: module.PublishEvent,

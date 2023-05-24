@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/configs"
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth"
@@ -15,10 +14,6 @@ import (
 )
 
 func main() {
-	fmt.Println(uuid.New())
-	fmt.Println(uuid.New())
-	fmt.Println(uuid.New())
-	fmt.Println(uuid.New())
 	ctx := context.Background()
 
 	// Configure db connection

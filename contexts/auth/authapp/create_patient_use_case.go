@@ -99,7 +99,7 @@ func (uc CreatePatientUseCase) Command(request CreatePatientRequest) error {
 	contacts := authdomain.CreateContacts(emails, phones, addresss)
 
 	// Role entity
-	patientRoles, patientRolesErr := uc.RoleRepository.GetSystemRolesByAlias([]authdomain.RoleAlias{authdomain.ALIAS_PATIENT})
+	patientRoles, patientRolesErr := uc.RoleRepository.GetAliasRolesByAlias([]authdomain.RoleAlias{authdomain.ALIAS_PATIENT})
 
 	if patientRolesErr != nil {
 		return patientRolesErr

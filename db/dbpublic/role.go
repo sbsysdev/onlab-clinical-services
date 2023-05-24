@@ -3,6 +3,7 @@ package dbpublic
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authdomain"
 	"github.com/OnLab-Clinical/onlab-clinical-services/db/dbshared"
@@ -35,6 +36,9 @@ func MigratePublicSystemRoles(db *gorm.DB) error {
 				},
 				Scope: string(authdomain.SCOPE_SYSTEM),
 				State: string(authdomain.ROLE_STATE_ACTIVE),
+				Time: dbshared.TimeAt{
+					CreatedAt: time.Date(2023, time.March, 24, 20, 44, 0, 0, time.UTC),
+				},
 			},
 		},
 		{
@@ -47,6 +51,9 @@ func MigratePublicSystemRoles(db *gorm.DB) error {
 				},
 				Scope: string(authdomain.SCOPE_SYSTEM),
 				State: string(authdomain.ROLE_STATE_ACTIVE),
+				Time: dbshared.TimeAt{
+					CreatedAt: time.Date(2023, time.March, 24, 20, 44, 0, 0, time.UTC),
+				},
 			},
 		},
 		{
@@ -59,8 +66,27 @@ func MigratePublicSystemRoles(db *gorm.DB) error {
 				},
 				Scope: string(authdomain.SCOPE_SYSTEM),
 				State: string(authdomain.ROLE_STATE_ACTIVE),
+				Time: dbshared.TimeAt{
+					CreatedAt: time.Date(2023, time.March, 24, 20, 44, 0, 0, time.UTC),
+				},
 			},
 		},
+	}
+
+	for _, v := range roles {
+		if err := db.Save(&v).Error; err != nil {
+			fmt.Println("ERROR ON SYSTEM", err)
+			fmt.Println(errors.Is(err, gorm.ErrDuplicatedKey))
+			return err
+		}
+	}
+
+	return nil
+}
+
+// Migrate public user roles
+func MigratePublicUserRoles(db *gorm.DB) error {
+	roles := []Role{
 		{
 			Alias: string(authdomain.ALIAS_PARENT),
 			Role: dbshared.Role{
@@ -71,12 +97,16 @@ func MigratePublicSystemRoles(db *gorm.DB) error {
 				},
 				Scope: string(authdomain.SCOPE_USER),
 				State: string(authdomain.ROLE_STATE_ACTIVE),
+				Time: dbshared.TimeAt{
+					CreatedAt: time.Date(2023, time.March, 24, 20, 44, 0, 0, time.UTC),
+				},
 			},
 		},
 	}
 
 	for _, v := range roles {
 		if err := db.Save(&v).Error; err != nil {
+			fmt.Println("ERROR ON USER", err)
 			fmt.Println(errors.Is(err, gorm.ErrDuplicatedKey))
 			return err
 		}

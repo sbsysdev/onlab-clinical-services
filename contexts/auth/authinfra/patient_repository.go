@@ -29,6 +29,10 @@ func (repo PatientRepository) CreatePatient(patient authdomain.PatientEntity) er
 		}
 	}()
 
+	if err := tx.Exec("SET search_path=public;").Error; err != nil {
+		return err
+	}
+
 	// Validate user name
 	var usernameCoincidences int64 = 0
 	if err := tx.Table("users").Where("name = ?", user.Name).Count(&usernameCoincidences); err.Error != nil {
