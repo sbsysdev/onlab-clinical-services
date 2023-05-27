@@ -106,8 +106,6 @@ func MigratePublicUserRoles(db *gorm.DB) error {
 
 	for _, v := range roles {
 		if err := db.Save(&v).Error; err != nil {
-			fmt.Println("ERROR ON USER", err)
-			fmt.Println(errors.Is(err, gorm.ErrDuplicatedKey))
 			return err
 		}
 	}
