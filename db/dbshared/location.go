@@ -1049,84 +1049,84 @@ func MigrateSharedLocation(db *gorm.DB) error {
 					Municipalities: []Municipality{
 						{
 							ID:   126,
-							Name: "",
+							Name: "Ciudad Antigua",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   127,
-							Name: "",
+							Name: "Dipilto",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   128,
-							Name: "",
+							Name: "El Jícaro",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   129,
-							Name: "",
+							Name: "Jalapa",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   130,
-							Name: "",
+							Name: "Macuelizo",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   131,
-							Name: "",
+							Name: "Mozonte",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   132,
-							Name: "",
+							Name: "Murra",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   133,
-							Name: "",
+							Name: "Ocotal",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   134,
-							Name: "",
+							Name: "Quilalí",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   135,
-							Name: "",
+							Name: "San Fernando",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   136,
-							Name: "",
+							Name: "Santa María",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
 							ID:   137,
-							Name: "",
+							Name: "Wiwilí",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
@@ -1141,71 +1141,43 @@ func MigrateSharedLocation(db *gorm.DB) error {
 					Name: "Río San Juan",
 					Municipalities: []Municipality{
 						{
-							ID:   0,
-							Name: "",
+							ID:   138,
+							Name: "El Almendro",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   139,
+							Name: "El Castillo",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   140,
+							Name: "Morrito",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   141,
+							Name: "San Carlos",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   142,
+							Name: "San Juan del Norte",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
-							Time: TimeAt{
-								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
-							},
-						},
-						{
-							ID:   0,
-							Name: "",
-							Time: TimeAt{
-								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
-							},
-						},
-						{
-							ID:   0,
-							Name: "",
-							Time: TimeAt{
-								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
-							},
-						},
-						{
-							ID:   0,
-							Name: "",
-							Time: TimeAt{
-								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
-							},
-						},
-						{
-							ID:   0,
-							Name: "",
+							ID:   143,
+							Name: "San Miguelito",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
@@ -1220,71 +1192,71 @@ func MigrateSharedLocation(db *gorm.DB) error {
 					Name: "Rivas",
 					Municipalities: []Municipality{
 						{
-							ID:   0,
-							Name: "",
+							ID:   144,
+							Name: "Altagracia",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   145,
+							Name: "Belén",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   146,
+							Name: "Buenos Aires",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   147,
+							Name: "Cárdenas",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   148,
+							Name: "Moyogalpa",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   149,
+							Name: "Potosí",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   150,
+							Name: "Rivas",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   151,
+							Name: "San Jorge",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   152,
+							Name: "San Juan del Sur",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
 						},
 						{
-							ID:   0,
-							Name: "",
+							ID:   153,
+							Name: "Tola",
 							Time: TimeAt{
 								CreatedAt: time.Date(2023, time.March, 27, 12, 18, 0, 0, time.UTC),
 							},
