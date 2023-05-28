@@ -80,10 +80,10 @@ func PublicMigration(db *gorm.DB) {
 
 	// Migrate public seeds
 	if err := dbpublic.MigratePublicSystemRoles(db); err != nil {
-		panic(err)
+		fmt.Println(err.Error())
 	}
 	if err := dbpublic.MigratePublicUserRoles(db); err != nil {
-		panic(err)
+		fmt.Println(err.Error())
 	}
 
 	// Migrate location seed
@@ -106,6 +106,6 @@ func PublicMigration(db *gorm.DB) {
 	}
 
 	if err := dbshared.MigrateSharedLocation(db); err != nil {
-		panic(err)
+		fmt.Println(err.Error())
 	}
 }

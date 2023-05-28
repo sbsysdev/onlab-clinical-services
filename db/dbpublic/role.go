@@ -27,7 +27,6 @@ func MigratePublicSystemRoles(db *gorm.DB) error {
 		{
 			Alias: string(authdomain.ALIAS_PATIENT),
 			Role: dbshared.Role{
-				ID: "1a631fc7-4fbc-4361-a9b0-7a5f15679203",
 				Name: map[string]string{
 					"en": "Patient",
 					"es": "Paciente",
@@ -42,7 +41,6 @@ func MigratePublicSystemRoles(db *gorm.DB) error {
 		{
 			Alias: string(authdomain.ALIAS_OWNER),
 			Role: dbshared.Role{
-				ID: "82f0ead3-edd2-4437-86d6-9208ce3f85c4",
 				Name: map[string]string{
 					"en": "Owner",
 					"es": "Propietario",
@@ -57,7 +55,6 @@ func MigratePublicSystemRoles(db *gorm.DB) error {
 		{
 			Alias: string(authdomain.ALIAS_COLLABORATOR),
 			Role: dbshared.Role{
-				ID: "1d64222c-fa18-4c27-8c7e-a0406684ad63",
 				Name: map[string]string{
 					"en": "Collaborator",
 					"es": "Colaborador",
@@ -86,7 +83,6 @@ func MigratePublicUserRoles(db *gorm.DB) error {
 		{
 			Alias: string(authdomain.ALIAS_PARENT),
 			Role: dbshared.Role{
-				ID: "982b4857-48a8-4e7b-9b4b-6527cf26c046",
 				Name: map[string]string{
 					"en": "Parent",
 					"es": "Padre",
