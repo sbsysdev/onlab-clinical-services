@@ -32,7 +32,7 @@ func (info *OrganizationInfo) Scan(v interface{}) error {
 	return json.Unmarshal(bytes, &info)
 }
 func (OrganizationInfo) GormDataType() string {
-	return "jsonb NOT NULL UNIQUE"
+	return "jsonb"
 }
 func (info OrganizationInfo) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
 	jsonValue, _ := json.Marshal(info)
@@ -45,15 +45,15 @@ func (info OrganizationInfo) GormValue(ctx context.Context, db *gorm.DB) clause.
 
 // Organization data
 type Organization struct {
-	ID       string `gorm:"column:organization_id;type:uuid NOT NULL UNIQUE PRIMARY KEY;default:gen_random_uuid();"`
-	Name     string `gorm:"type:VARCHAR(64) NOT NULL;"`
-	Domain   string `gorm:"type:VARCHAR(64) NOT NULL UNIQUE;"`
-	Schema   string `gorm:"type:VARCHAR(64) NOT NULL UNIQUE;"`
-	Info     OrganizationInfo
+	ID       string           `gorm:"column:organization_id;type:uuid;not null;unique;primaryKey;default:gen_random_uuid()"`
+	Name     string           `gorm:"type:VARCHAR(64);not null"`
+	Domain   string           `gorm:"type:VARCHAR(64);not null;unique"`
+	Schema   string           `gorm:"type:VARCHAR(64);not null;unique"`
+	Info     OrganizationInfo `gorm:"not null;unique"`
 	Contacts dbshared.Contacts
-	State    string          `gorm:"type:public.ORG_STATE_ENUM NOT NULL;default:'unverified'"`
+	State    string          `gorm:"type:public.ORG_STATE_ENUM;not null;default:'unverified'"`
 	Time     dbshared.TimeAt `gorm:"embedded"`
 
-	Users []*User `gorm:"many2many:user_role_organization;"`
-	Roles []*Role `gorm:"many2many:user_role_organization;"`
+	Users []*User `gorm:"many2many:user_role_organization"`
+	Roles []*Role `gorm:"many2many:user_role_organization"`
 }

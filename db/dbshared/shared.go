@@ -45,7 +45,7 @@ func (lang *MultiLanguage) Scan(v interface{}) error {
 	return json.Unmarshal(bytes, &lang)
 }
 func (MultiLanguage) GormDataType() string {
-	return "jsonb NOT NULL UNIQUE"
+	return "jsonb"
 }
 func (lang MultiLanguage) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
 	jsonValue, _ := json.Marshal(lang)

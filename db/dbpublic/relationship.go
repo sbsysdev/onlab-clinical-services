@@ -35,10 +35,10 @@ func MigratePublicPrerequisites(db *gorm.DB) error {
 
 // User-Role data
 type UserRole struct {
-	UserID string `gorm:"column:user_id;type:uuid NOT NULL;primaryKey;"`
-	User   User   `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	RoleID string `gorm:"column:role_id;type:uuid NOT NULL;primaryKey;"`
-	Role   Role   `gorm:"foreignKey:RoleID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	UserID string `gorm:"column:user_id;type:uuid;not null;primaryKey"`
+	User   User   `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RoleID string `gorm:"column:role_id;type:uuid;not null;primaryKey"`
+	Role   Role   `gorm:"foreignKey:RoleID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (UserRole) TableName() string {
@@ -47,12 +47,12 @@ func (UserRole) TableName() string {
 
 // User-Role-User data
 type UserRoleUser struct {
-	UserID          string `gorm:"column:user_id;type:uuid NOT NULL;primaryKey;"`
-	User            User   `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	RoleID          string `gorm:"column:role_id;type:uuid NOT NULL;primaryKey;"`
-	Role            Role   `gorm:"foreignKey:RoleID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	DependentUserID string `gorm:"column:dependent_user_id;type:uuid NOT NULL;primaryKey;"`
-	DependentUser   User   `gorm:"foreignKey:DependentUserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	UserID          string `gorm:"column:user_id;type:uuid;not null;primaryKey"`
+	User            User   `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RoleID          string `gorm:"column:role_id;type:uuid;not null;primaryKey"`
+	Role            Role   `gorm:"foreignKey:RoleID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	DependentUserID string `gorm:"column:dependent_user_id;type:uuid;not null;primaryKey"`
+	DependentUser   User   `gorm:"foreignKey:DependentUserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (UserRoleUser) TableName() string {
@@ -61,12 +61,12 @@ func (UserRoleUser) TableName() string {
 
 // User-Role-User data
 type UserRoleOrganization struct {
-	UserID         string       `gorm:"column:user_id;type:uuid NOT NULL;primaryKey;"`
-	User           User         `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	RoleID         string       `gorm:"column:role_id;type:uuid NOT NULL;primaryKey;"`
-	Role           Role         `gorm:"foreignKey:RoleID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	OrganizationID string       `gorm:"column:organization_id;type:uuid NOT NULL;primaryKey;"`
-	Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	UserID         string       `gorm:"column:user_id;type:uuid;not null;primaryKey"`
+	User           User         `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RoleID         string       `gorm:"column:role_id;type:uuid;not null;primaryKey"`
+	Role           Role         `gorm:"foreignKey:RoleID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	OrganizationID string       `gorm:"column:organization_id;type:uuid;not null;primaryKey"`
+	Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (UserRoleOrganization) TableName() string {

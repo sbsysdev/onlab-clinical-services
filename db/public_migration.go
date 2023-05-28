@@ -78,11 +78,34 @@ func PublicMigration(db *gorm.DB) {
 		fmt.Println(err.Error())
 	}
 
-	// migrate public seeds
+	// Migrate public seeds
 	if err := dbpublic.MigratePublicSystemRoles(db); err != nil {
 		panic(err)
 	}
 	if err := dbpublic.MigratePublicUserRoles(db); err != nil {
+		panic(err)
+	}
+
+	// Migrate location seed
+	if err := db.AutoMigrate(
+		&dbshared.Country{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
+
+	if err := db.AutoMigrate(
+		&dbshared.Department{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
+
+	if err := db.AutoMigrate(
+		&dbshared.Municipality{},
+	); err != nil {
+		fmt.Println(err.Error())
+	}
+
+	if err := dbshared.MigrateSharedLocation(db); err != nil {
 		panic(err)
 	}
 }

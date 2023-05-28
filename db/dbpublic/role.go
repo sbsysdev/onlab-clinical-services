@@ -1,8 +1,6 @@
 package dbpublic
 
 import (
-	"errors"
-	"fmt"
 	"time"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authdomain"
@@ -12,15 +10,15 @@ import (
 
 // Public Role data
 type Role struct {
-	Alias string `gorm:"column:alias;type:VARCHAR(64) NOT NULL UNIQUE;index;"`
-	dbshared.Role
+	Alias         string `gorm:"column:alias;type:VARCHAR(64);not null;unique;index"`
+	dbshared.Role `gorm:"embedded"`
 
-	SystemUsers []*User `gorm:"many2many:user_role;"`
+	SystemUsers []*User `gorm:"many2many:user_role"`
 
-	UserUsers []*User `gorm:"many2many:user_role_user;"`
+	UserUsers []*User `gorm:"many2many:user_role_user"`
 
-	Organizations     []*Organization `gorm:"many2many:user_role_organization;"`
-	OrganizationUsers []*User         `gorm:"many2many:user_role_organization;"`
+	Organizations     []*Organization `gorm:"many2many:user_role_organization"`
+	OrganizationUsers []*User         `gorm:"many2many:user_role_organization"`
 }
 
 // Migrate public system roles
@@ -75,8 +73,6 @@ func MigratePublicSystemRoles(db *gorm.DB) error {
 
 	for _, v := range roles {
 		if err := db.Save(&v).Error; err != nil {
-			fmt.Println("ERROR ON SYSTEM", err)
-			fmt.Println(errors.Is(err, gorm.ErrDuplicatedKey))
 			return err
 		}
 	}
