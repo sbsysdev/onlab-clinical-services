@@ -57,11 +57,19 @@ func (module AuthModule) LoadModule() error {
 		},
 	}
 
+	createOwnerController := authctrls.CreateOwnerController{
+		CreateOwnerUseCase: authapp.CreateOwnerUseCase{
+			// Repositories
+			// Publisher
+		},
+	}
+
 	// Configure routes
 
 	v1 := module.Router.Group("/v1")
 	{
 		v1.POST("/patients", createPatientController.Handle)
+		v1.POST("/owners", createOwnerController.Handle)
 	}
 
 	return nil
