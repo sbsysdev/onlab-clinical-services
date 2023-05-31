@@ -81,12 +81,12 @@ func CreatePhone(country Country, phone string) (ContactPhone, error) {
 }
 
 type ContactPhoneRequest struct {
-	Country uint8
+	Country string
 	Phone   string
 }
 
 func CreatePhoneList(min uint8, locationRepo LocationRepository, phones ...ContactPhoneRequest) ([]ContactPhone, error) {
-	if min == 0 && len(phones) == 1 && phones[0].Country == 0 && len(phones[0].Phone) == 0 {
+	if min == 0 && len(phones) == 1 && len(phones[0].Country) == 0 && len(phones[0].Phone) == 0 {
 		return []ContactPhone{}, nil
 	}
 
@@ -97,7 +97,7 @@ func CreatePhoneList(min uint8, locationRepo LocationRepository, phones ...Conta
 	phoneList := make([]ContactPhone, len(phones))
 
 	for i, v := range phones {
-		country, countryErr := locationRepo.GetCountryById(v.Country, false, false)
+		country, countryErr := locationRepo.GetCountryById(v.Country)
 
 		if countryErr != nil {
 			return []ContactPhone{}, countryErr
@@ -138,12 +138,12 @@ func CreateAddress(municipality Municipality, address string) (ContactAddress, e
 }
 
 type ContactAddressRequest struct {
-	Municipality uint16
+	Municipality string
 	Address      string
 }
 
 func CreateAddressList(min uint8, locationRepo LocationRepository, addresses ...ContactAddressRequest) ([]ContactAddress, error) {
-	if min == 0 && len(addresses) == 1 && addresses[0].Municipality == 0 && len(addresses[0].Address) == 0 {
+	if min == 0 && len(addresses) == 1 && len(addresses[0].Municipality) == 0 && len(addresses[0].Address) == 0 {
 		return []ContactAddress{}, nil
 	}
 

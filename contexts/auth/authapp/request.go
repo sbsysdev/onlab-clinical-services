@@ -19,11 +19,11 @@ type PersonalDocumentRequest struct {
 
 // Contacts request
 type PhoneRequest struct {
-	Country uint8  `json:"country"`
+	Country string `json:"country"`
 	Phone   string `json:"phone"`
 }
 type AddressRequest struct {
-	Municipality uint16 `json:"municipality"`
+	Municipality string `json:"municipality"`
 	Address      string `json:"address"`
 }
 type ContactsRequest struct {

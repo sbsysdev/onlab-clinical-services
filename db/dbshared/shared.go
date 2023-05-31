@@ -72,11 +72,11 @@ type IdentityDocument struct {
 
 // Contacts data
 type Phone struct {
-	Country uint8  `json:"country"`
+	Country string `json:"country"`
 	Phone   string `json:"phone"`
 }
 type Address struct {
-	Municipality uint16 `json:"municipality"`
+	Municipality string `json:"municipality"`
 	Address      string `json:"address"`
 }
 type Contacts struct {
