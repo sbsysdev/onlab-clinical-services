@@ -64,12 +64,34 @@ func (module AuthModule) LoadModule() error {
 		},
 	}
 
+	readCountryListController := authctrls.ReadCountryListController{
+		ReadCountryListUseCase: authapp.ReadCountryListUseCase{
+			// Repositories
+		},
+	}
+
 	// Configure routes
 
 	v1 := module.Router.Group("/v1")
+
+	// Sign up
+	signUp := v1.Group("/sign-up")
 	{
-		v1.POST("/patients", createPatientController.Handle)
-		v1.POST("/owners", createOwnerController.Handle)
+		signUp.POST("/patients", createPatientController.Handle)
+		signUp.POST("/owners", createOwnerController.Handle)
+		signUp.POST("/collaborators")
+	}
+
+	// Sign in
+	signIn := v1.Group("/sign-in")
+	{
+		signIn.POST("/")
+	}
+
+	// Resoruces
+	resources := v1.Group("/resources")
+	{
+		resources.GET("/countries", readCountryListController.Handle)
 	}
 
 	return nil
