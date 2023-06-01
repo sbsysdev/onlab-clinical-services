@@ -12,7 +12,7 @@ type Municipality struct {
 type Department struct {
 	Id             string         `json:"id"`
 	Name           string         `json:"name"`
-	Municipalities []Municipality `json:"municipality"`
+	Municipalities []Municipality `json:"municipalities"`
 }
 
 // Country Value Object
@@ -20,7 +20,7 @@ type Country struct {
 	Id          string       `json:"id"`
 	Name        string       `json:"name"`
 	Calling     string       `json:"calling"`
-	Departments []Department `json:"department"`
+	Departments []Department `json:"departments"`
 }
 
 const (

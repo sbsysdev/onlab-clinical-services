@@ -44,5 +44,17 @@ func (repo LocationRepository) GetCountryById(countryId string) (authdomain.Coun
 }
 
 func (repo LocationRepository) GetCountryList() ([]authdomain.Country, error) {
-	return []authdomain.Country{}, nil
+	var founded []dbshared.Country
+
+	if err := repo.DB.Table("countries").Preload("Departments").Preload("Departments.Municipalities").Find(&founded).Error; err != nil {
+		return []authdomain.Country{}, errors.New(string(authdomain.ERRORS_COUNTRY_NOT_FOUND))
+	}
+
+	countries := make([]authdomain.Country, len(founded))
+
+	for i, v := range founded {
+		countries[i] = FromCountryModelToCountryEntityFilled(v)
+	}
+
+	return countries, nil
 }

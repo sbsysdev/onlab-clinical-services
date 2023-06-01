@@ -67,6 +67,7 @@ func (module AuthModule) LoadModule() error {
 	readCountryListController := authctrls.ReadCountryListController{
 		ReadCountryListUseCase: authapp.ReadCountryListUseCase{
 			// Repositories
+			LocationRepository: locationRepo,
 		},
 	}
 
