@@ -1,10 +1,15 @@
 package authdomain
 
 import (
+	"crypto/rand"
+	"crypto/subtle"
+	"encoding/base64"
 	"errors"
+	"fmt"
 	"regexp"
+	"strings"
 
-	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/crypto/argon2"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
 )
@@ -33,6 +38,22 @@ const (
 	ERRORS_USER_PASSWORD_FORMAT shareddomain.DomainError = "ERRORS_USER_PASSWORD_FORMAT"
 )
 
+type params struct {
+	memory      uint32
+	iterations  uint32
+	parallelism uint8
+	saltLength  uint32
+	keyLength   uint32
+}
+
+var p = &params{
+	memory:      128 * 1024,
+	iterations:  4,
+	parallelism: 4,
+	saltLength:  16,
+	keyLength:   32,
+}
+
 func CreateUserPassword(password string) (UserPassword, error) {
 	if len(password) == 0 {
 		return UserPassword(""), errors.New(string(ERRORS_USER_PASSWORD_EMPTY))
@@ -55,13 +76,73 @@ func CreateUserPassword(password string) (UserPassword, error) {
 		return UserPassword(""), errors.New(string(ERRORS_USER_PASSWORD_FORMAT))
 	}
 
-	hashed, err := bcrypt.GenerateFromPassword([]byte(string(password)), bcrypt.DefaultCost)
-
-	if err != nil {
+	salt := make([]byte, p.saltLength)
+	if _, err := rand.Read(salt); err != nil {
 		return UserPassword(""), err
 	}
 
-	return UserPassword(hashed), nil
+	hash := argon2.IDKey([]byte(password), salt, p.iterations, p.memory, p.parallelism, p.keyLength)
+
+	b64Salt := base64.RawStdEncoding.EncodeToString(salt)
+	b64Hash := base64.RawStdEncoding.EncodeToString(hash)
+
+	encodedHash := fmt.Sprintf("$argon2id$v=%d$m=%d,t=%d,p=%d$%s$%s", argon2.Version, p.memory, p.iterations, p.parallelism, b64Salt, b64Hash)
+
+	return UserPassword(encodedHash), nil
+}
+
+const (
+	ERRORS_INVALID_HASH         = "ERRORS_INVALID_HASH"
+	ERRORS_INCOMPATIBLE_VERSION = "ERRORS_INCOMPATIBLE_VERSION"
+)
+
+func decodeHash(encodedHash string) (p *params, salt []byte, hash []byte, err error) {
+	vals := strings.Split(encodedHash, "$")
+	if len(vals) != 6 {
+		return nil, nil, nil, errors.New(ERRORS_INVALID_HASH)
+	}
+
+	var version int
+	_, err = fmt.Sscanf(vals[2], "v=%d", &version)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	if version != argon2.Version {
+		return nil, nil, nil, errors.New(ERRORS_INCOMPATIBLE_VERSION)
+	}
+
+	p = &params{}
+	_, err = fmt.Sscanf(vals[3], "m=%d,t=%d,p=%d", &p.memory, &p.iterations, &p.parallelism)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	salt, err = base64.RawStdEncoding.Strict().DecodeString(vals[4])
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	p.saltLength = uint32(len(salt))
+
+	hash, err = base64.RawStdEncoding.Strict().DecodeString(vals[5])
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	p.keyLength = uint32(len(hash))
+
+	return p, salt, hash, nil
+}
+func ComparePasswordAndHash(password, encodedHash string) (bool, error) {
+	p, salt, hash, err := decodeHash(encodedHash)
+	if err != nil {
+		return false, err
+	}
+
+	otherHash := argon2.IDKey([]byte(password), salt, p.iterations, p.memory, p.parallelism, p.keyLength)
+
+	if subtle.ConstantTimeCompare(hash, otherHash) == 1 {
+		return true, nil
+	}
+	return false, nil
 }
 
 // User State Value Object
@@ -98,6 +179,6 @@ func CreateUser(name UserName, password UserPassword) User {
 	return User{
 		Name:     name,
 		Password: password,
-		State:    USER_STATE_UNVERIFIED,
+		State:    USER_STATE_VERIFIED,
 	}
 }
