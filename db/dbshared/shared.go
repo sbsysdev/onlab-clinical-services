@@ -105,3 +105,30 @@ func (contacts Contacts) GormValue(ctx context.Context, db *gorm.DB) clause.Expr
 		Vars: []interface{}{string(jsonValue)},
 	}
 }
+
+type SingleContacts struct {
+	Email   string  `json:"email"`
+	Phone   Phone   `json:"phone"`
+	Address Address `json:"address"`
+}
+
+func (contacts *SingleContacts) Scan(v interface{}) error {
+	bytes, ok := v.([]byte)
+
+	if !ok {
+		return errors.New(fmt.Sprint("Failed to unmarshal JSONB value:", v))
+	}
+
+	return json.Unmarshal(bytes, &contacts)
+}
+func (SingleContacts) GormDataType() string {
+	return "jsonb"
+}
+func (contacts SingleContacts) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
+	jsonValue, _ := json.Marshal(contacts)
+
+	return clause.Expr{
+		SQL:  "?",
+		Vars: []interface{}{string(jsonValue)},
+	}
+}

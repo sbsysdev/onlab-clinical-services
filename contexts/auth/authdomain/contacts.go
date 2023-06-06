@@ -12,9 +12,10 @@ import (
 type ContactEmail string
 
 const (
-	ERRORS_CONTACT_EMAIL_EMPTY  shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_EMPTY"
-	ERRORS_CONTACT_EMAIL_FORMAT shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_FORMAT"
-	ERRORS_CONTACT_EMAIL_MIN    shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_MIN"
+	ERRORS_CONTACT_EMAIL_EMPTY         shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_EMPTY"
+	ERRORS_CONTACT_EMAIL_FORMAT        shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_FORMAT"
+	ERRORS_CONTACT_EMAIL_MIN           shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_MIN"
+	ERRORS_CONTACT_EMAIL_NOT_AVAILABLE shareddomain.DomainError = "ERRORS_CONTACT_EMAIL_NOT_AVAILABLE"
 )
 
 func CreateEmail(email string) (ContactEmail, error) {
@@ -63,8 +64,9 @@ type ContactPhone struct {
 }
 
 const (
-	ERRORS_CONTACT_PHONE_FORMAT shareddomain.DomainError = "ERRORS_CONTACT_PHONE_FORMAT"
-	ERRORS_CONTACT_PHONE_MIN    shareddomain.DomainError = "ERRORS_CONTACT_PHONE_MIN"
+	ERRORS_CONTACT_PHONE_FORMAT        shareddomain.DomainError = "ERRORS_CONTACT_PHONE_FORMAT"
+	ERRORS_CONTACT_PHONE_MIN           shareddomain.DomainError = "ERRORS_CONTACT_PHONE_MIN"
+	ERRORS_CONTACT_PHONE_NOT_AVAILABLE shareddomain.DomainError = "ERRORS_CONTACT_PHONE_NOT_AVAILABLE"
 )
 
 func CreatePhone(country Country, phone string) (ContactPhone, error) {
@@ -185,5 +187,19 @@ func CreateContacts(emails []ContactEmail, phones []ContactPhone, addresses []Co
 		Emails:    emails,
 		Phones:    phones,
 		Addresses: addresses,
+	}
+}
+
+type SingleContacts struct {
+	Email   ContactEmail   `json:"email"`
+	Phone   ContactPhone   `json:"phone"`
+	Address ContactAddress `json:"address"`
+}
+
+func CreateSingleContacts(email ContactEmail, phone ContactPhone, address ContactAddress) SingleContacts {
+	return SingleContacts{
+		Email:   email,
+		Phone:   phone,
+		Address: address,
 	}
 }

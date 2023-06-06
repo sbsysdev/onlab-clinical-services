@@ -50,7 +50,7 @@ type User struct {
 	Name     string `gorm:"type:VARCHAR(64);not null;unique"`
 	Password string `gorm:"type:TEXT;not null"`
 	Person   Person `gorm:"not null;unique"`
-	Contacts dbshared.Contacts
+	Contacts dbshared.SingleContacts
 	State    string          `gorm:"type:public.USER_STATE_ENUM;not null;default:'unverified'"`
 	Time     dbshared.TimeAt `gorm:"embedded"`
 

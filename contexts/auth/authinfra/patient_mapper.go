@@ -8,43 +8,9 @@ import (
 	"github.com/OnLab-Clinical/onlab-clinical-services/db/dbshared"
 )
 
-func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User, []dbpublic.UserRole, error) {
-	// Map contacts
-
-	// Contact emails
-	emails := make([]string, len(patient.Contacts.Emails))
-	for i, v := range patient.Contacts.Emails {
-		emails[i] = string(v)
-	}
-
-	// Contact phones
-	phones := make([]dbshared.Phone, len(patient.Contacts.Phones))
-	for i, v := range patient.Contacts.Phones {
-		phones[i] = dbshared.Phone{
-			Country: v.Country.Id,
-			Phone:   v.Phone,
-		}
-	}
-
-	// Contact addresses
-	addresses := make([]dbshared.Address, len(patient.Contacts.Addresses))
-	for i, v := range patient.Contacts.Addresses {
-		addresses[i] = dbshared.Address{
-			Municipality: v.Municipality.Id,
-			Address:      v.Address,
-		}
-	}
-
-	// User roles
-	userRoles := make([]dbpublic.UserRole, len(patient.Roles))
-	for i, v := range patient.Roles {
-		userRoles[i] = dbpublic.UserRole{
-			UserID: patient.ID,
-			RoleID: v.ID,
-		}
-	}
-
-	return dbpublic.User{
+func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User, []dbpublic.UserRole) {
+	// User
+	user := dbpublic.User{
 		ID:       patient.ID,
 		Name:     string(patient.User.Name),
 		Password: string(patient.User.Password),
@@ -57,15 +23,32 @@ func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User,
 				Number: string(patient.NID),
 			},
 		},
-		Contacts: dbshared.Contacts{
-			Emails:    emails,
-			Phones:    phones,
-			Addresses: addresses,
+		Contacts: dbshared.SingleContacts{
+			Email: string(patient.Contacts.Email),
+			Phone: dbshared.Phone{
+				Country: patient.Contacts.Phone.Country.Id,
+				Phone:   patient.Contacts.Phone.Phone,
+			},
+			Address: dbshared.Address{
+				Municipality: patient.Contacts.Address.Municipality.Id,
+				Address:      patient.Contacts.Address.Address,
+			},
 		},
 		State: string(patient.User.State),
 		Time: dbshared.TimeAt{
 			CreatedAt: time.Now().UTC(),
 			UpdatedAt: time.Now().UTC(),
 		},
-	}, userRoles, nil
+	}
+
+	// User roles
+	userRoles := make([]dbpublic.UserRole, len(patient.Roles))
+	for i, role := range patient.Roles {
+		userRoles[i] = dbpublic.UserRole{
+			UserID: patient.ID,
+			RoleID: role.ID,
+		}
+	}
+
+	return user, userRoles
 }

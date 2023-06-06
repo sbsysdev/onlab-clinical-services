@@ -8,12 +8,12 @@ type PatientEntity struct {
 	Person   Person                         `json:"person"`
 	NID      NationalIdentityDocumentNumber `json:"nid"`
 	User     User                           `json:"user"`
-	Contacts Contacts                       `json:"contacts"`
+	Contacts SingleContacts                 `json:"contacts"`
 	Roles    []AliasRoleEntity              `json:"roles"`
 }
 
 // Patient Entity Factory
-func CreatePatient(person Person, nid NationalIdentityDocumentNumber, user User, contacts Contacts, roles []AliasRoleEntity) PatientEntity {
+func CreatePatient(person Person, nid NationalIdentityDocumentNumber, user User, contacts SingleContacts, roles []AliasRoleEntity) PatientEntity {
 	return PatientEntity{
 		ID:       uuid.New().String(),
 		Person:   person,

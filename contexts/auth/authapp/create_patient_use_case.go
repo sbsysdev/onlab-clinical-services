@@ -78,25 +78,37 @@ func (uc CreatePatientUseCase) Command(request CreatePatientRequest) error {
 
 	// Contacts value object
 
-	emails, emailErr := authdomain.CreateEmailList(0, request.Contacts.Email)
+	email, emailErr := authdomain.CreateEmail(request.Contacts.Email)
 
 	if emailErr != nil {
 		return emailErr
 	}
 
-	phones, phoneErr := authdomain.CreatePhoneList(1, uc.LocationRepository, authdomain.ContactPhoneRequest(request.Contacts.Phone))
+	country, countryErr := uc.LocationRepository.GetCountryById(request.Contacts.Phone.Country)
+
+	if countryErr != nil {
+		return countryErr
+	}
+
+	phone, phoneErr := authdomain.CreatePhone(country, request.Contacts.Phone.Phone)
 
 	if phoneErr != nil {
 		return phoneErr
 	}
 
-	addresss, addressErr := authdomain.CreateAddressList(1, uc.LocationRepository, authdomain.ContactAddressRequest(request.Contacts.Address))
+	municipality, municipalityErr := uc.LocationRepository.GetMunicipalityById(request.Contacts.Address.Municipality)
+
+	if municipalityErr != nil {
+		return municipalityErr
+	}
+
+	address, addressErr := authdomain.CreateAddress(municipality, request.Contacts.Address.Address)
 
 	if addressErr != nil {
 		return addressErr
 	}
 
-	contacts := authdomain.CreateContacts(emails, phones, addresss)
+	contacts := authdomain.CreateSingleContacts(email, phone, address)
 
 	// Role entity
 	patientRoles, patientRolesErr := uc.RoleRepository.GetAliasRolesByAlias([]authdomain.RoleAlias{authdomain.ALIAS_PATIENT})
