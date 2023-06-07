@@ -28,11 +28,19 @@ func (uc SignInPatientUseCase) Query(request SignInPatientRequest) (SignInPatien
 	patient, patientErr := uc.PatientRepository.ReadPatientByName(request.Name)
 
 	if patientErr != nil {
-		return SignInPatientResponse{}, errors.New(string(authdomain.ERRORS_USER_NAME_NOT_FOUND))
+		return SignInPatientResponse{}, patientErr
 	}
 
 	if err := authdomain.ComparePasswordAndHash(request.Password, string(patient.User.Password)); err != nil {
 		return SignInPatientResponse{}, err
+	}
+
+	if patient.User.State == authdomain.USER_STATE_SUSPENDED {
+		return SignInPatientResponse{}, errors.New(string(authdomain.ERRORS_USER_STATE_SUSPENDED))
+	}
+
+	if patient.User.State == authdomain.USER_STATE_BLOCKED {
+		return SignInPatientResponse{}, errors.New(string(authdomain.ERRORS_USER_STATE_BLOCKED))
 	}
 
 	patient.User.Password = ""

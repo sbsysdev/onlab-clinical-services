@@ -159,6 +159,8 @@ const (
 
 const (
 	ERRORS_USER_STATE_NOT_VALID shareddomain.DomainError = "ERRORS_USER_STATE_NOT_VALID"
+	ERRORS_USER_STATE_SUSPENDED shareddomain.DomainError = "ERRORS_USER_STATE_SUSPENDED"
+	ERRORS_USER_STATE_BLOCKED   shareddomain.DomainError = "ERRORS_USER_STATE_BLOCKED"
 )
 
 func CreateUserState(state string) (UserState, error) {

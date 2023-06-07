@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authdomain"
-	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
 	"github.com/OnLab-Clinical/onlab-clinical-services/db/dbpublic"
 )
 
@@ -94,7 +93,11 @@ func (repo PatientRepository) CreatePatient(patient authdomain.PatientEntity) er
 func (repo PatientRepository) ReadPatientByName(name string) (authdomain.PatientEntity, error) {
 	var user dbpublic.User
 
-	if err := repo.DB.Table("users").First(&user, "name = ?", name).Error; err != nil {
+	if err := repo.DB.Table("users").Preload("UserRoles").Preload("SystemRoles").First(&user, "name = ?", name).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return authdomain.PatientEntity{}, errors.New(string(authdomain.ERRORS_USER_NAME_NOT_FOUND))
+		}
+
 		return authdomain.PatientEntity{}, err
 	}
 
@@ -126,5 +129,5 @@ func (repo PatientRepository) ReadPatientByName(name string) (authdomain.Patient
 		return authdomain.PatientEntity{}, roleErr
 	}
 
-	return FromPatientModelToEntityFilled(user, country, municipality, roles), errors.New(string(shareddomain.ERRORS_UNIMPLEMENTED))
+	return FromPatientModelToEntityFilled(user, country, municipality, roles), nil
 }

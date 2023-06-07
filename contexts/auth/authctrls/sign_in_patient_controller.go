@@ -37,6 +37,6 @@ func (ctrl SignInPatientController) Handle(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": true,
-		"data":   signedIn,
+		"data":   FromSignInUseCaseResponseToResponse(signedIn),
 	})
 }
