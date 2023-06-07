@@ -7,10 +7,16 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authdomain"
+	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
+	"github.com/OnLab-Clinical/onlab-clinical-services/db/dbpublic"
 )
 
 type PatientRepository struct {
+	// Postgresql connection
 	DB *gorm.DB
+	// Repositories
+	LocationRepository LocationRepository
+	RoleRepository     RoleRepository
 }
 
 func (repo PatientRepository) CreatePatient(patient authdomain.PatientEntity) error {
@@ -83,4 +89,42 @@ func (repo PatientRepository) CreatePatient(patient authdomain.PatientEntity) er
 
 	// Try to commit all changes
 	return tx.Commit().Error
+}
+
+func (repo PatientRepository) ReadPatientByName(name string) (authdomain.PatientEntity, error) {
+	var user dbpublic.User
+
+	if err := repo.DB.Table("users").First(&user, "name = ?", name).Error; err != nil {
+		return authdomain.PatientEntity{}, err
+	}
+
+	country, countryErr := repo.LocationRepository.GetCountryModelById(user.Contacts.Phone.Country)
+
+	if countryErr != nil {
+		return authdomain.PatientEntity{}, countryErr
+	}
+
+	municipality, municipalityErr := repo.LocationRepository.GetMunicipalityModelById(user.Contacts.Address.Municipality)
+
+	if municipalityErr != nil {
+		return authdomain.PatientEntity{}, municipalityErr
+	}
+
+	aliases := make([]authdomain.RoleAlias, len(user.SystemRoles)+len(user.UserRoles))
+
+	for i, sysRole := range user.SystemRoles {
+		aliases[i] = authdomain.RoleAlias(sysRole.Alias)
+	}
+
+	for i, userRole := range user.UserRoles {
+		aliases[len(user.SystemRoles)+i] = authdomain.RoleAlias(userRole.Alias)
+	}
+
+	roles, roleErr := repo.RoleRepository.GetAliasRoleModelsByAlias(aliases)
+
+	if roleErr != nil {
+		return authdomain.PatientEntity{}, roleErr
+	}
+
+	return FromPatientModelToEntityFilled(user, country, municipality, roles), errors.New(string(shareddomain.ERRORS_UNIMPLEMENTED))
 }

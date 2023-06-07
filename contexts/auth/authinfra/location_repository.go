@@ -13,14 +13,23 @@ type LocationRepository struct {
 	DB *gorm.DB
 }
 
-func (repo LocationRepository) GetMunicipalityById(municipalityId string) (authdomain.Municipality, error) {
+func (repo LocationRepository) GetMunicipalityModelById(municipalityId string) (dbshared.Municipality, error) {
 	var founded dbshared.Municipality
 
 	if err := repo.DB.Table("municipalities").First(&founded, "municipality_id = ?", municipalityId).Error; err != nil {
-		return authdomain.Municipality{}, errors.New(string(authdomain.ERRORS_MUNICIPALITY_NOT_FOUND))
+		return dbshared.Municipality{}, errors.New(string(authdomain.ERRORS_MUNICIPALITY_NOT_FOUND))
 	}
 
-	return FromMunicipalityModelToMunicipalityEntity(founded), nil
+	return founded, nil
+}
+func (repo LocationRepository) GetMunicipalityById(municipalityId string) (authdomain.Municipality, error) {
+	municipality, municipalityErr := repo.GetMunicipalityModelById(municipalityId)
+
+	if municipalityErr != nil {
+		return authdomain.Municipality{}, municipalityErr
+	}
+
+	return FromMunicipalityModelToMunicipalityEntity(municipality), nil
 }
 
 func (repo LocationRepository) GetDepartmentById(departmentId string) (authdomain.Department, error) {
@@ -33,14 +42,23 @@ func (repo LocationRepository) GetDepartmentById(departmentId string) (authdomai
 	return FromDepartmentModelToDepartmentEntity(founded), nil
 }
 
-func (repo LocationRepository) GetCountryById(countryId string) (authdomain.Country, error) {
+func (repo LocationRepository) GetCountryModelById(countryId string) (dbshared.Country, error) {
 	var founded dbshared.Country
 
 	if err := repo.DB.Table("countries").First(&founded, "country_id = ?", countryId).Error; err != nil {
-		return authdomain.Country{}, errors.New(string(authdomain.ERRORS_COUNTRY_NOT_FOUND))
+		return dbshared.Country{}, errors.New(string(authdomain.ERRORS_COUNTRY_NOT_FOUND))
 	}
 
-	return FromCountryModelToCountryEntity(founded), nil
+	return founded, nil
+}
+func (repo LocationRepository) GetCountryById(countryId string) (authdomain.Country, error) {
+	countryModel, countryErr := repo.GetCountryModelById(countryId)
+
+	if countryErr != nil {
+		return authdomain.Country{}, countryErr
+	}
+
+	return FromCountryModelToCountryEntity(countryModel), nil
 }
 
 func (repo LocationRepository) GetCountryList() ([]authdomain.Country, error) {

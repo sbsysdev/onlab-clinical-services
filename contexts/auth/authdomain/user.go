@@ -20,6 +20,7 @@ type UserName string
 const (
 	ERRORS_USER_NAME_EMPTY         shareddomain.DomainError = "ERRORS_USER_NAME_EMPTY"
 	ERRORS_USER_NAME_NOT_AVAILABLE shareddomain.DomainError = "ERRORS_USER_NAME_NOT_AVAILABLE"
+	ERRORS_USER_NAME_NOT_FOUND     shareddomain.DomainError = "ERRORS_USER_NAME_NOT_FOUND"
 )
 
 func CreateUserName(name string) (UserName, error) {
@@ -34,8 +35,9 @@ func CreateUserName(name string) (UserName, error) {
 type UserPassword string
 
 const (
-	ERRORS_USER_PASSWORD_EMPTY  shareddomain.DomainError = "ERRORS_USER_PASSWORD_EMPTY"
-	ERRORS_USER_PASSWORD_FORMAT shareddomain.DomainError = "ERRORS_USER_PASSWORD_FORMAT"
+	ERRORS_USER_PASSWORD_EMPTY    shareddomain.DomainError = "ERRORS_USER_PASSWORD_EMPTY"
+	ERRORS_USER_PASSWORD_FORMAT   shareddomain.DomainError = "ERRORS_USER_PASSWORD_FORMAT"
+	ERRORS_USER_PASSWORD_MISMATCH shareddomain.DomainError = "ERRORS_USER_PASSWORD_MISMATCH"
 )
 
 type params struct {
@@ -131,18 +133,18 @@ func decodeHash(encodedHash string) (p *params, salt []byte, hash []byte, err er
 
 	return p, salt, hash, nil
 }
-func ComparePasswordAndHash(password, encodedHash string) (bool, error) {
+func ComparePasswordAndHash(password, encodedHash string) error {
 	p, salt, hash, err := decodeHash(encodedHash)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	otherHash := argon2.IDKey([]byte(password), salt, p.iterations, p.memory, p.parallelism, p.keyLength)
 
 	if subtle.ConstantTimeCompare(hash, otherHash) == 1 {
-		return true, nil
+		return nil
 	}
-	return false, nil
+	return errors.New(string(ERRORS_USER_PASSWORD_MISMATCH))
 }
 
 // User State Value Object

@@ -11,15 +11,25 @@ type RoleRepository struct {
 	DB *gorm.DB
 }
 
-func (repo RoleRepository) GetAliasRolesByAlias(aliases []authdomain.RoleAlias) ([]authdomain.AliasRoleEntity, error) {
+func (repo RoleRepository) GetAliasRoleModelsByAlias(aliases []authdomain.RoleAlias) ([]dbpublic.Role, error) {
 	var founds []dbpublic.Role
 
 	if err := repo.DB.Exec("SET search_path=public;").Error; err != nil {
-		return []authdomain.AliasRoleEntity{}, err
+		return []dbpublic.Role{}, err
 	}
 
 	if err := repo.DB.Table("roles").Where("alias IN ?", aliases).Find(&founds).Error; err != nil {
-		return []authdomain.AliasRoleEntity{}, err
+		return []dbpublic.Role{}, err
+	}
+
+	return founds, nil
+}
+
+func (repo RoleRepository) GetAliasRolesByAlias(aliases []authdomain.RoleAlias) ([]authdomain.AliasRoleEntity, error) {
+	founds, foundErr := repo.GetAliasRoleModelsByAlias(aliases)
+
+	if foundErr != nil {
+		return []authdomain.AliasRoleEntity{}, foundErr
 	}
 
 	roles := make([]authdomain.AliasRoleEntity, len(founds))

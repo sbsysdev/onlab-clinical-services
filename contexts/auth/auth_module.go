@@ -25,9 +25,13 @@ type AuthModule struct {
 func (module AuthModule) LoadModule() error {
 	// Configure repositories
 
-	patientRepo := authinfra.PatientRepository{DB: module.Connection}
 	roleRepo := authinfra.RoleRepository{DB: module.Connection}
 	locationRepo := authinfra.LocationRepository{DB: module.Connection}
+	patientRepo := authinfra.PatientRepository{
+		DB:                 module.Connection,
+		LocationRepository: locationRepo,
+		RoleRepository:     roleRepo,
+	}
 
 	// TODO: Configure services
 
@@ -71,6 +75,13 @@ func (module AuthModule) LoadModule() error {
 		},
 	}
 
+	signInPatientController := authctrls.SignInPatientController{
+		SignInPatientUseCase: authapp.SignInPatientUseCase{
+			// Repositories
+			PatientRepository: patientRepo,
+		},
+	}
+
 	// Configure routes
 
 	v1 := module.Router.Group("/v1")
@@ -86,7 +97,7 @@ func (module AuthModule) LoadModule() error {
 	// Sign in
 	signIn := v1.Group("/sign-in")
 	{
-		signIn.POST("/")
+		signIn.POST("/patients", signInPatientController.Handle)
 	}
 
 	// Resoruces
