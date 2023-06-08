@@ -104,3 +104,36 @@ func FromPatientModelToEntityFilled(userModel dbpublic.User, countryModel dbshar
 		Roles: roles,
 	}
 }
+
+func FromPatientModelToEntity(model dbpublic.User) authdomain.PatientEntity {
+	return authdomain.PatientEntity{
+		ID: model.ID,
+		Person: authdomain.Person{
+			Name:    authdomain.PersonName(model.Person.Name),
+			Surname: authdomain.PersonSurname(model.Person.Surname),
+			Birth:   authdomain.PersonBirth(model.Person.Birth),
+			Sex:     authdomain.PersonSex(model.Person.Sex),
+		},
+		NID: authdomain.NationalIdentityDocumentNumber(model.Person.Nid.Number),
+		User: authdomain.User{
+			Name:     authdomain.UserName(model.Name),
+			Password: authdomain.UserPassword(model.Password),
+			State:    authdomain.UserState(model.State),
+		},
+		Contacts: authdomain.SingleContacts{
+			Email: authdomain.ContactEmail(model.Contacts.Email),
+			Phone: authdomain.ContactPhone{
+				Country: authdomain.Country{
+					Id: model.Contacts.Phone.Country,
+				},
+				Phone: model.Contacts.Phone.Phone,
+			},
+			Address: authdomain.ContactAddress{
+				Municipality: authdomain.Municipality{
+					Id: model.Contacts.Address.Municipality,
+				},
+				Address: model.Contacts.Address.Address,
+			},
+		},
+	}
+}

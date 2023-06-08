@@ -131,3 +131,17 @@ func (repo PatientRepository) ReadPatientByName(name string) (authdomain.Patient
 
 	return FromPatientModelToEntityFilled(user, country, municipality, roles), nil
 }
+
+func (repo PatientRepository) ReadPatientById(patientId string) (authdomain.PatientEntity, error) {
+	var founded dbpublic.User
+
+	if err := repo.DB.Table("users").First(&founded, "user_id = ?", patientId).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return authdomain.PatientEntity{}, errors.New(string(authdomain.ERRORS_USER_NOT_FOUND))
+		}
+
+		return authdomain.PatientEntity{}, err
+	}
+
+	return FromPatientModelToEntity(founded), nil
+}

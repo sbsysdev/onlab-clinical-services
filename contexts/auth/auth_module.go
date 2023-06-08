@@ -82,6 +82,13 @@ func (module AuthModule) LoadModule() error {
 		},
 	}
 
+	refreshPatientTokenController := authctrls.RefreshPatientTokenController{
+		RefreshPatientTokenUseCase: authapp.RefreshPatientTokenUseCase{
+			// Repositories
+			PatientRepository: patientRepo,
+		},
+	}
+
 	// Configure routes
 
 	v1 := module.Router.Group("/v1")
@@ -104,6 +111,7 @@ func (module AuthModule) LoadModule() error {
 	resources := v1.Group("/resources")
 	{
 		resources.GET("/countries", readCountryListController.Handle)
+		resources.POST("/refresh", refreshPatientTokenController.Handle)
 	}
 
 	return nil

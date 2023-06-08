@@ -8,10 +8,13 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/argon2"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
+	"github.com/OnLab-Clinical/onlab-clinical-services/utils"
 )
 
 // User Name Value Object
@@ -147,6 +150,38 @@ func ComparePasswordAndHash(password, encodedHash string) error {
 	return errors.New(string(ERRORS_USER_PASSWORD_MISMATCH))
 }
 
+func CreatePatientTokenAndRefreshToken(patientId string) (signed, signedRefresh string, err error) {
+	jwtKey := utils.GetEnv("JWT_KEY", "qwerty")
+
+	// Token
+	exp := time.Now().UTC().Add(time.Minute * 55)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss": "OnLab-Clinical",
+		"sub": patientId,
+		"exp": exp.Unix(),
+	})
+	signed, signedErr := token.SignedString([]byte(jwtKey))
+
+	if signedErr != nil {
+		return "", "", signedErr
+	}
+
+	// Refresh Token
+	expRefresh := exp.Add(time.Minute * 5)
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss": "OnLab-Clinical",
+		"sub": patientId,
+		"exp": expRefresh.Unix(),
+	})
+	signedRefresh, signedRefreshErr := refreshToken.SignedString([]byte(jwtKey))
+
+	if signedRefreshErr != nil {
+		return "", "", signedErr
+	}
+
+	return signed, signedRefresh, nil
+}
+
 // User State Value Object
 type UserState string
 
@@ -158,9 +193,10 @@ const (
 )
 
 const (
-	ERRORS_USER_STATE_NOT_VALID shareddomain.DomainError = "ERRORS_USER_STATE_NOT_VALID"
-	ERRORS_USER_STATE_SUSPENDED shareddomain.DomainError = "ERRORS_USER_STATE_SUSPENDED"
-	ERRORS_USER_STATE_BLOCKED   shareddomain.DomainError = "ERRORS_USER_STATE_BLOCKED"
+	ERRORS_USER_STATE_NOT_VALID  shareddomain.DomainError = "ERRORS_USER_STATE_NOT_VALID"
+	ERRORS_USER_STATE_SUSPENDED  shareddomain.DomainError = "ERRORS_USER_STATE_SUSPENDED"
+	ERRORS_USER_STATE_BLOCKED    shareddomain.DomainError = "ERRORS_USER_STATE_BLOCKED"
+	ERRORS_USER_STATE_UNVERIFIED shareddomain.DomainError = "ERRORS_USER_STATE_UNVERIFIED"
 )
 
 func CreateUserState(state string) (UserState, error) {
@@ -177,6 +213,16 @@ type User struct {
 	Password UserPassword `json:"password"`
 	State    UserState    `json:"state"`
 }
+
+const (
+	ERRORS_USER_NOT_FOUND shareddomain.DomainError = "ERRORS_USER_NOT_FOUND"
+)
+
+const (
+	ERRORS_TOKEN_ALREADY_WORKING  shareddomain.DomainError = "ERRORS_TOKEN_ALREADY_WORKING"
+	ERRORS_REFRESH_TOKEN_EXPIRED  shareddomain.DomainError = "ERRORS_REFRESH_TOKEN_EXPIRED"
+	ERRORS_TOKEN_SUBJECT_MISMATCH shareddomain.DomainError = "ERRORS_TOKEN_SUBJECT_MISMATCH"
+)
 
 // User Value Object Factory
 func CreateUser(name UserName, password UserPassword) User {
