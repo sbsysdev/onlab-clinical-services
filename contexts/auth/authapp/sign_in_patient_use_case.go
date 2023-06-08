@@ -2,8 +2,12 @@ package authapp
 
 import (
 	"errors"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authdomain"
+	"github.com/OnLab-Clinical/onlab-clinical-services/utils"
 )
 
 // Request
@@ -14,8 +18,9 @@ type SignInPatientRequest struct {
 
 // Response
 type SignInPatientResponse struct {
-	Token   string                   `json:"token"`
-	Patient authdomain.PatientEntity `json:"patient"`
+	Token        string                   `json:"token"`
+	RefreshToken string                   `json:"refresh"`
+	Patient      authdomain.PatientEntity `json:"patient"`
 }
 
 // Use Case
@@ -45,8 +50,37 @@ func (uc SignInPatientUseCase) Query(request SignInPatientRequest) (SignInPatien
 
 	patient.User.Password = ""
 
+	jwtKey := utils.GetEnv("JWT_KEY", "qwerty")
+
+	// Token
+	exp := time.Now().UTC().Add(time.Hour * 2)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss": "OnLab-Clinical",
+		"sub": patient.ID,
+		"exp": exp,
+	})
+	signed, signedErr := token.SignedString([]byte(jwtKey))
+
+	if signedErr != nil {
+		return SignInPatientResponse{}, signedErr
+	}
+
+	// Refresh Token
+	expRefresh := exp.Add(time.Minute * 5)
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss": "OnLab-Clinical",
+		"sub": patient.ID,
+		"exp": expRefresh,
+	})
+	signedRefresh, signedRefreshErr := refreshToken.SignedString([]byte(jwtKey))
+
+	if signedRefreshErr != nil {
+		return SignInPatientResponse{}, signedErr
+	}
+
 	return SignInPatientResponse{
-		Token:   "",
-		Patient: patient,
+		Token:        signed,
+		RefreshToken: signedRefresh,
+		Patient:      patient,
 	}, nil
 }

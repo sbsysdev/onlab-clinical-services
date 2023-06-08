@@ -8,6 +8,7 @@ import (
 
 type SignInPatientResponse struct {
 	Token    string                 `json:"token"`
+	Refresh  string                 `json:"refresh"`
 	Person   PersonResponse         `json:"person"`
 	Contacts SingleContactsResponse `json:"contacts"`
 	User     UserResponse           `json:"user"`
@@ -26,7 +27,8 @@ func FromSignInUseCaseResponseToResponse(response authapp.SignInPatientResponse)
 	}
 
 	return SignInPatientResponse{
-		Token: response.Token,
+		Token:   response.Token,
+		Refresh: response.RefreshToken,
 		Person: PersonResponse{
 			Name:    string(response.Patient.Person.Name),
 			Surname: string(response.Patient.Person.Surname),
