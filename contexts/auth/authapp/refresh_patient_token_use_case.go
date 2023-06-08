@@ -4,11 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
-
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authdomain"
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
-	"github.com/OnLab-Clinical/onlab-clinical-services/utils"
 )
 
 type RefreshPatientTokenRequest struct {
@@ -27,72 +24,43 @@ type RefreshPatientTokenUseCase struct {
 }
 
 func (uc RefreshPatientTokenUseCase) Query(request RefreshPatientTokenRequest) (RefreshPatientTokenResponse, error) {
-	currentToken := request.Token
-	currentRefreshToken := request.RefreshToken
-	jwtKey := utils.GetEnv("JWT_KEY", "qwerty")
-
 	// Current Token
-	token, _ := jwt.Parse(currentToken, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New(string(shareddomain.ERRORS_UNAUTHORIZED))
-		}
+	currentIssuer, currentSubject, currentExpiration, currentErr := authdomain.DecodeToken(request.Token)
 
-		return []byte(jwtKey), nil
-	})
-
-	claims, claimsOk := token.Claims.(jwt.MapClaims)
-
-	if !claimsOk {
+	if currentErr != nil {
 		return RefreshPatientTokenResponse{}, errors.New(string(shareddomain.ERRORS_UNAUTHORIZED))
 	}
 
-	tokenExp, _ := claims.GetExpirationTime()
+	if currentIssuer != "OnLab-Clinical" {
+		return RefreshPatientTokenResponse{}, errors.New(string(authdomain.ERRORS_TOKEN_UNKNOWN))
+	}
 
-	if tokenExp.Time.UTC().After(time.Now().UTC()) {
+	if currentExpiration.UTC().After(time.Now().UTC()) {
 		return RefreshPatientTokenResponse{}, errors.New(string(authdomain.ERRORS_TOKEN_ALREADY_WORKING))
 	}
 
 	// Current Refresh Token
-	refreshToken, _ := jwt.Parse(currentRefreshToken, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New(string(shareddomain.ERRORS_UNAUTHORIZED))
-		}
+	refreshIssuer, refreshSubject, refreshExpiration, refreshErr := authdomain.DecodeToken(request.RefreshToken)
 
-		return []byte(jwtKey), nil
-	})
-
-	refreshClaims, refreshClaimsOk := refreshToken.Claims.(jwt.MapClaims)
-
-	if !refreshClaimsOk {
+	if refreshErr != nil {
 		return RefreshPatientTokenResponse{}, errors.New(string(shareddomain.ERRORS_UNAUTHORIZED))
 	}
 
-	refreshTokenExp, _ := refreshClaims.GetExpirationTime()
+	if refreshIssuer != "OnLab-Clinical" {
+		return RefreshPatientTokenResponse{}, errors.New(string(authdomain.ERRORS_REFRESH_TOKEN_UNKNOWN))
+	}
 
-	if refreshTokenExp.Time.UTC().Before(time.Now().UTC()) {
+	if refreshExpiration.UTC().Before(time.Now().UTC()) {
 		return RefreshPatientTokenResponse{}, errors.New(string(authdomain.ERRORS_REFRESH_TOKEN_EXPIRED))
 	}
 
 	// Compare Subject
-
-	tokenSub, tsErr := claims.GetSubject()
-
-	if tsErr != nil {
-		return RefreshPatientTokenResponse{}, tsErr
-	}
-
-	refreshTokenSub, rtsErr := refreshClaims.GetSubject()
-
-	if rtsErr != nil {
-		return RefreshPatientTokenResponse{}, rtsErr
-	}
-
-	if tokenSub != refreshTokenSub {
+	if currentSubject != refreshSubject {
 		return RefreshPatientTokenResponse{}, errors.New(string(authdomain.ERRORS_TOKEN_SUBJECT_MISMATCH))
 	}
 
 	// Get Current Patient
-	patient, patientErr := uc.PatientRepository.ReadPatientById(tokenSub)
+	patient, patientErr := uc.PatientRepository.ReadPatientById(currentSubject)
 
 	if patientErr != nil {
 		return RefreshPatientTokenResponse{}, patientErr
