@@ -181,6 +181,30 @@ func CreatePatientTokenAndRefreshToken(patientId string) (signed, signedRefresh 
 
 	return signed, signedRefresh, nil
 }
+func DecodeToken(token string) (issuer, subject string, expiration time.Time, err error) {
+	jwtKey := utils.GetEnv("JWT_KEY", "qwerty")
+
+	// Current Token
+	parser, _ := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New(string(shareddomain.ERRORS_UNAUTHORIZED))
+		}
+
+		return []byte(jwtKey), nil
+	})
+
+	claims, claimsOk := parser.Claims.(jwt.MapClaims)
+
+	if !claimsOk {
+		return "", "", time.Now(), errors.New(string(shareddomain.ERRORS_UNAUTHORIZED))
+	}
+
+	issuer, _ = claims.GetIssuer()
+	subject, _ = claims.GetSubject()
+	exp, _ := claims.GetExpirationTime()
+
+	return issuer, subject, exp.Time, nil
+}
 
 // User State Value Object
 type UserState string
@@ -220,6 +244,8 @@ const (
 
 const (
 	ERRORS_TOKEN_ALREADY_WORKING  shareddomain.DomainError = "ERRORS_TOKEN_ALREADY_WORKING"
+	ERRORS_TOKEN_EXPIRED          shareddomain.DomainError = "ERRORS_TOKEN_EXPIRED"
+	ERRORS_TOKEN_UNKNOWN          shareddomain.DomainError = "ERRORS_TOKEN_UNKNOWN"
 	ERRORS_REFRESH_TOKEN_EXPIRED  shareddomain.DomainError = "ERRORS_REFRESH_TOKEN_EXPIRED"
 	ERRORS_TOKEN_SUBJECT_MISMATCH shareddomain.DomainError = "ERRORS_TOKEN_SUBJECT_MISMATCH"
 )

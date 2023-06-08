@@ -11,6 +11,7 @@ import (
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth/authinfra"
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/shareddomain"
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/shared/sharedinfra"
+	"github.com/OnLab-Clinical/onlab-clinical-services/middlewares"
 )
 
 type AuthModule struct {
@@ -112,6 +113,14 @@ func (module AuthModule) LoadModule() error {
 	{
 		resources.GET("/countries", readCountryListController.Handle)
 		resources.POST("/refresh", refreshPatientTokenController.Handle)
+		resources.GET("/protected", middlewares.CheckTokenMiddleware(), func(ctx *gin.Context) {
+			patientId := ctx.MustGet("patientId").(string)
+
+			ctx.JSON(200, gin.H{
+				"status":  true,
+				"message": "Hello from protected " + patientId,
+			})
+		})
 	}
 
 	return nil
