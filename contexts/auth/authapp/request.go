@@ -23,8 +23,10 @@ type PhoneRequest struct {
 	Phone   string `json:"phone"`
 }
 type AddressRequest struct {
-	Municipality string `json:"municipality"`
-	Address      string `json:"address"`
+	Municipality string  `json:"municipality"`
+	Address      string  `json:"address"`
+	Latitude     float32 `json:"latitude"`
+	Longitude    float32 `json:"longitude"`
 }
 type ContactsRequest struct {
 	Emails    []string         `json:"emails"`

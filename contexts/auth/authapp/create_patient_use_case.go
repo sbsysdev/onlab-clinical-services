@@ -102,7 +102,7 @@ func (uc CreatePatientUseCase) Command(request CreatePatientRequest) error {
 		return municipalityErr
 	}
 
-	address, addressErr := authdomain.CreateAddress(municipality, request.Contacts.Address.Address)
+	address, addressErr := authdomain.CreateAddress(municipality, request.Contacts.Address.Address, request.Contacts.Address.Latitude, request.Contacts.Address.Longitude)
 
 	if addressErr != nil {
 		return addressErr

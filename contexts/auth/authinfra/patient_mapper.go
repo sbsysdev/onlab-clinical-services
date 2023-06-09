@@ -32,6 +32,8 @@ func FromPatientEntityToModels(patient authdomain.PatientEntity) (dbpublic.User,
 			Address: dbshared.Address{
 				Municipality: patient.Contacts.Address.Municipality.Id,
 				Address:      patient.Contacts.Address.Address,
+				Latitude:     patient.Contacts.Address.Latitude,
+				Longitude:    patient.Contacts.Address.Longitude,
 			},
 		},
 		State: string(patient.User.State),

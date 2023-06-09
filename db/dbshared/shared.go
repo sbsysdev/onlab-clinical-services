@@ -76,13 +76,15 @@ type Phone struct {
 	Phone   string `json:"phone"`
 }
 type Address struct {
-	Municipality string `json:"municipality"`
-	Address      string `json:"address"`
+	Municipality string  `json:"municipality"`
+	Address      string  `json:"address"`
+	Latitude     float32 `json:"latitude"`
+	Longitude    float32 `json:"longitude"`
 }
 type Contacts struct {
-	Emails    []string  `json:"emails"`
-	Phones    []Phone   `json:"phones"`
-	Addresses []Address `json:"addresses"`
+	Emails  []string `json:"emails"`
+	Phones  []Phone  `json:"phones"`
+	Address Address  `json:"address"`
 }
 
 func (contacts *Contacts) Scan(v interface{}) error {

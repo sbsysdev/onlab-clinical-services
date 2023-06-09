@@ -121,6 +121,8 @@ func CreatePhoneList(min uint8, locationRepo LocationRepository, phones ...Conta
 type ContactAddress struct {
 	Municipality Municipality `json:"municipality"`
 	Address      string       `json:"address"`
+	Latitude     float32      `json:"latitude"`
+	Longitude    float32      `json:"longitude"`
 }
 
 const (
@@ -128,7 +130,7 @@ const (
 	ERRORS_CONTACT_ADDRESS_MIN   shareddomain.DomainError = "ERRORS_CONTACT_ADDRESS_MIN"
 )
 
-func CreateAddress(municipality Municipality, address string) (ContactAddress, error) {
+func CreateAddress(municipality Municipality, address string, latitude, longitude float32) (ContactAddress, error) {
 	if len(address) == 0 {
 		return ContactAddress{}, errors.New(string(ERRORS_CONTACT_ADDRESS_EMPTY))
 	}
@@ -136,12 +138,16 @@ func CreateAddress(municipality Municipality, address string) (ContactAddress, e
 	return ContactAddress{
 		Municipality: municipality,
 		Address:      address,
+		Latitude:     latitude,
+		Longitude:    longitude,
 	}, nil
 }
 
 type ContactAddressRequest struct {
 	Municipality string
 	Address      string
+	Latitude     float32
+	Longitude    float32
 }
 
 func CreateAddressList(min uint8, locationRepo LocationRepository, addresses ...ContactAddressRequest) ([]ContactAddress, error) {
@@ -155,14 +161,14 @@ func CreateAddressList(min uint8, locationRepo LocationRepository, addresses ...
 
 	addressList := make([]ContactAddress, len(addresses))
 
-	for i, v := range addresses {
-		municipality, municipalityErr := locationRepo.GetMunicipalityById(v.Municipality)
+	for i, addressRequest := range addresses {
+		municipality, municipalityErr := locationRepo.GetMunicipalityById(addressRequest.Municipality)
 
 		if municipalityErr != nil {
 			return []ContactAddress{}, municipalityErr
 		}
 
-		address, addressErr := CreateAddress(municipality, v.Address)
+		address, addressErr := CreateAddress(municipality, addressRequest.Address, addressRequest.Latitude, addressRequest.Longitude)
 
 		if addressErr != nil {
 			return []ContactAddress{}, addressErr
