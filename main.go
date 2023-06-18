@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/configs"
@@ -37,6 +38,18 @@ func main() {
 
 	// Configure http server
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:           []string{"http://localhost:5173", "http://localhost:4173"},
+		AllowMethods:           []string{"GET", "POST", "PUT"},
+		AllowHeaders:           []string{"Origin", "Content-Type", "Authorization", "Accept-Language"},
+		AllowCredentials:       false,
+		ExposeHeaders:          []string{"Content-Length", "content-type"},
+		MaxAge:                 0,
+		AllowWildcard:          false,
+		AllowBrowserExtensions: false,
+		AllowWebSockets:        false,
+		AllowFiles:             false,
+	}))
 	api := router.Group("/api")
 
 	// Configure modules
