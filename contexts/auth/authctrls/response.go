@@ -33,6 +33,8 @@ type PhoneResponse struct {
 type AddressResponse struct {
 	Municipality MunicipalityResponse `json:"municipality"`
 	Address      string               `json:"address"`
+	Latitude     float32              `json:"latitude"`
+	Longitude    float32              `json:"longitude"`
 }
 
 type SingleContactsResponse struct {

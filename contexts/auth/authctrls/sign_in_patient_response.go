@@ -51,7 +51,9 @@ func FromSignInUseCaseResponseToResponse(response authapp.SignInPatientResponse)
 					ID:   response.Patient.Contacts.Address.Municipality.Id,
 					Name: response.Patient.Contacts.Address.Municipality.Name,
 				},
-				Address: response.Patient.Contacts.Address.Address,
+				Address:   response.Patient.Contacts.Address.Address,
+				Latitude:  response.Patient.Contacts.Address.Latitude,
+				Longitude: response.Patient.Contacts.Address.Longitude,
 			},
 		},
 		User: UserResponse{
