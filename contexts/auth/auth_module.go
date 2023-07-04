@@ -90,6 +90,13 @@ func (module AuthModule) LoadModule() error {
 		},
 	}
 
+	recoveryPatientController := authctrls.RecoveryPatientController{
+		RecoveryPatientUseCase: authapp.RecoveryPatientUseCase{
+			// Repositories
+			PatientRepository: patientRepo,
+		},
+	}
+
 	// Configure routes
 
 	v1 := module.Router.Group("/v1")
@@ -106,6 +113,12 @@ func (module AuthModule) LoadModule() error {
 	signIn := v1.Group("/sign-in")
 	{
 		signIn.POST("/patients", signInPatientController.Handle)
+	}
+
+	// Recovery
+	recovery := v1.Group("/recovery")
+	{
+		recovery.POST("/patients", recoveryPatientController.Handle)
 	}
 
 	// Resoruces
