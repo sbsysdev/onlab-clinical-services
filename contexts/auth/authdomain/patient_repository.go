@@ -6,4 +6,6 @@ type PatientRepository interface {
 	ReadPatientByName(string) (PatientEntity, error)
 
 	ReadPatientById(string) (PatientEntity, error)
+
+	ReadPatientByEmail(string) (PatientEntity, error)
 }

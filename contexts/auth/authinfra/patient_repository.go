@@ -145,3 +145,17 @@ func (repo PatientRepository) ReadPatientById(patientId string) (authdomain.Pati
 
 	return FromPatientModelToEntity(founded), nil
 }
+
+func (repo PatientRepository) ReadPatientByEmail(email string) (authdomain.PatientEntity, error) {
+	var founded dbpublic.User
+
+	if err := repo.DB.Table("users").First(&founded, fmt.Sprintf(`contacts @> '{"email":"%s"}'`, email)).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return authdomain.PatientEntity{}, errors.New(string(authdomain.ERRORS_USER_NOT_FOUND))
+		}
+
+		return authdomain.PatientEntity{}, err
+	}
+
+	return FromPatientModelToEntity(founded), nil
+}

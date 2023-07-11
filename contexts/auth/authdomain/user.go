@@ -205,6 +205,25 @@ func DecodeToken(token string) (issuer, subject string, expiration time.Time, er
 
 	return issuer, subject, exp.Time, nil
 }
+func CreatePatientRecoveryToken(patientId, email string) (signed string, err error) {
+	jwtKey := utils.GetEnv("JWT_KEY", "qwerty")
+
+	// Token
+	exp := time.Now().UTC().Add(time.Minute * 5)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss":   "OnLab-Clinical",
+		"sub":   patientId,
+		"email": email,
+		"exp":   exp.Unix(),
+	})
+	signed, signedErr := token.SignedString([]byte(jwtKey))
+
+	if signedErr != nil {
+		return "", signedErr
+	}
+
+	return signed, nil
+}
 
 // User State Value Object
 type UserState string
