@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 
 	"github.com/OnLab-Clinical/onlab-clinical-services/configs"
 	"github.com/OnLab-Clinical/onlab-clinical-services/contexts/auth"
@@ -15,19 +16,26 @@ import (
 )
 
 func main() {
+	args := os.Args
+	// Configure env
+	if len(args) > 2 && args[2] == "local" {
+		if err := godotenv.Load(".env.app.local"); err != nil {
+			panic(err)
+		}
+	}
+
 	ctx := context.Background()
 
 	// Configure db connection
 	connection := configs.ConfigurePostgreSQLConnection(
-		utils.GetEnv("DB_HOST", "localhost"),
-		utils.GetEnv("DB_USER", "user"),
-		utils.GetEnv("DB_PASSWORD", "1234"),
-		utils.GetEnv("DB_NAME", "onlab_clinical"),
-		utils.GetEnv("DB_PORT", "5432"),
+		utils.GetEnv("DB_HOST", ""),
+		utils.GetEnv("DB_USER", ""),
+		utils.GetEnv("DB_PASSWORD", ""),
+		utils.GetEnv("DB_NAME", ""),
+		utils.GetEnv("DB_PORT", ""),
 	)
 
 	// Configure migration
-	args := os.Args
 	if len(args) > 1 && args[1] == "migrate" {
 		db.PublicMigration(connection)
 	}
