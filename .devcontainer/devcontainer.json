@@ -1,0 +1,21 @@
+{
+  "name": "OnLab-Clinical Services",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+        "redhat.vscode-yaml",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind"
+  ],
+  "postCreateCommand": "git config --global --add safe.directory /workspaces/onlab-clinical-services && git config --global core.autocrlf input && go install github.com/air-verse/air@latest"
+}
